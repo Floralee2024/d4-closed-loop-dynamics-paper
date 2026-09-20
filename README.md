@@ -53,6 +53,8 @@ The original full D4b command is recorded in `source/D4_PROTOCOL.md`. It is expe
 
 The local artifact check also runs `repro/audit_claim_numbers.py`, which recomputes the headline D4a means and checks the D4b report-level table shape and separation ranges.
 
+For the formal CUDA sweep, `repro/run_formal_d4b_gpu.sh` launches the ten-seed run without credentials. When a run is split across GPUs or background jobs, `repro/merge_d4b_chunks.py` validates complete, non-overlapping raw curves and recomputes every official summary.
+
 For the causal-interpretation gate, run the small fixed-model check with:
 
 ```powershell
