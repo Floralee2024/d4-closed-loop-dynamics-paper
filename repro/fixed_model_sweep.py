@@ -60,6 +60,12 @@ def parse_args():
     p.add_argument("--rank-min-gain", type=float, default=0.05)
     p.add_argument("--dyn-min-gain", type=float, default=0.05)
     p.add_argument("--frac", type=float, default=0.90)
+    p.add_argument(
+        "--dynamics-metric",
+        choices=["hard_id_nmi", "transition_head_gain"],
+        default="transition_head_gain",
+        help="C-dependent transition-head gain is the valid fixed-model diagnostic; hard_id_nmi reproduces the archived metric.",
+    )
     return p.parse_args()
 
 
@@ -141,6 +147,11 @@ def main():
 
     curves = pd.DataFrame(rows)
     curves = mod.add_dyn_scores(curves)
+    if args.dynamics_metric == "transition_head_gain":
+        group_cols = ["mode", "residual_lambda", "variant", "seed", "K", "split"]
+        for _, group in curves.groupby(group_cols, sort=False):
+            idx = group.index
+            curves.loc[idx, "dyn_score"] = mod.normalize_curve_values(group["transition_head_gain"].to_numpy())
     summary = mod.extract_cstars(
         curves,
         frac=args.frac,

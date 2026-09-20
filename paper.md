@@ -254,6 +254,8 @@ Train once per seed and residual condition, then evaluate the same weights acros
 
 We implemented a small fixed-model diagnostic using this repository's model and metric definitions. It completed for 16 seed × residual × split cells, but all cells had zero dynamics-score gain. The reason is structural: the current dynamics score uses NMI of hard symbol IDs, and those IDs are produced by the frozen logits without a C-dependent operation. Thus a naive frozen-weight sweep cannot recover the current `C*_dyn`; it does not show that fixed-model dynamics is absent. A valid causal check must first define a dynamics metric on a C-dependent quantity such as the continuous bottleneck or transition readout, or else state that the current `C*_dyn` is a training-path threshold.
 
+We then repeated the same 16-cell probe with a transition-head gain that consumes `q(C)`. All cells produced a valid `C*_dyn`; mean `sync_gap` by residual strength was 0.5/0.5 at strength 0, 3.5/1.5 at 0.1, 1.5/2.5 at 0.5, and 0.0/4.0 at 1.0 for ID/OOD-inverted respectively. This establishes that a C-dependent frozen-model dynamics estimand can be computed, but not that residual bypass has a formal intervention effect: the pattern is non-monotone, several ID cells have invalid `C*_util`, and the probe has only two seeds, one K, one training C, and no residual null.
+
 #### Common random numbers
 
 Reuse world draws, minibatches, evaluation draws, and noise across neighboring `C` values. This reduces the risk that the apparent threshold is a change in sampled problem instances.
@@ -303,6 +305,7 @@ The repository keeps the manuscript separate from copied source artifacts.
 | D4a/D4b report-level summary | `results/D4_integrated_report.md` |
 | D4b grouped summary | `results/D4b_residual_desync_results.md` |
 | Fixed-model diagnostic and raw probe | `results/fixed_model_sweep_probe.md` and `results/fixed_model_sweep_probe/` |
+| C-dependent fixed-model diagnostic | `results/fixed_model_sweep_transition_probe.md` and `results/fixed_model_sweep_transition_probe/` |
 | Claim ceiling and release gates | `CLAIMS_AND_LIMITS.md` |
 | Low-cost artifact check | `repro/validate_artifacts.ps1` |
 

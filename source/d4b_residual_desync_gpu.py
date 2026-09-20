@@ -634,6 +634,8 @@ def evaluate(
     total = 0
     correct_action = 0
     correct_outcome = 0
+    transition_head_correct = 0
+    transition_head_total = 0
     all_q, all_ids, all_y, all_outcome, all_code = [], [], [], [], []
     residual_var_ratios: List[float] = []
     residual_norm_ratios: List[float] = []
@@ -647,6 +649,12 @@ def evaluate(
                 residual_norm_ratios.append(float(out["residual_norm_ratio"].detach().cpu().item()))
             a_logits = out["action_logits"].reshape(B, T, -1)
             o_logits = out["outcome_logits"].reshape(B, T, -1)
+            trans_logits = out["trans_logits"].reshape(B, T, -1)
+            trans_pred = trans_logits.argmax(-1)
+            ids_batch = out["ids"].reshape(B, T)
+            if T > 1:
+                transition_head_correct += int((trans_pred[:, :-1] == ids_batch[:, 1:]).sum().item())
+                transition_head_total += B * (T - 1)
         a_logits_cpu = a_logits.float().cpu()
         o_logits_cpu = o_logits.float().cpu()
         pred_a = a_logits_cpu.argmax(-1)
@@ -670,6 +678,7 @@ def evaluate(
 
     action_acc = correct_action / max(total, 1)
     outcome_acc = correct_outcome / max(total, 1)
+    transition_head_acc = transition_head_correct / max(transition_head_total, 1)
     majority_acc = float(np.max(np.bincount(y, minlength=4)) / len(y))
     utility = (action_acc - majority_acc) / max(1e-9, 1.0 - majority_acc)
 
@@ -703,6 +712,12 @@ def evaluate(
     else:
         trans_acc = trans_majority = trans_acc_gain = float("nan")
 
+    # Unlike transition_acc_gain above, this readout uses the model's
+    # transition head on q(C), so it can vary with C after weights are frozen.
+    head_next_counts = np.bincount(ids_seq[:, 1:].reshape(-1), minlength=K)
+    head_majority = float(np.max(head_next_counts) / max(transition_head_total, 1))
+    transition_head_gain = (transition_head_acc - head_majority) / max(1e-9, 1.0 - head_majority)
+
     er = effective_rank(q)
     er_norm = er / max(1.0, q.shape[1])
 
@@ -723,6 +738,9 @@ def evaluate(
         "transition_acc": trans_acc,
         "transition_majority": trans_majority,
         "transition_acc_gain": trans_acc_gain,
+        "transition_head_acc": transition_head_acc,
+        "transition_head_majority": head_majority,
+        "transition_head_gain": transition_head_gain,
     }
 
 

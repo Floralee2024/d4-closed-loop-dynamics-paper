@@ -61,7 +61,7 @@ For the causal-interpretation gate, run the small fixed-model check with:
 
 This trains once at `train_C` and evaluates the same weights over the C grid. Its output is exploratory until scaled to the formal design.
 
-The first completed probe is archived in `results/fixed_model_sweep_probe/`. It found zero dynamics gain in all 16 cells because the current dynamics score uses hard symbol IDs that are invariant to C after freezing weights. This exposes an estimand-design issue: a formal fixed-model causal check requires a C-dependent dynamics metric first.
+The first hard-ID probe is archived in `results/fixed_model_sweep_probe/`; it found zero dynamics gain in all 16 cells because hard symbol IDs are invariant to C after freezing weights. A second probe in `results/fixed_model_sweep_transition_probe/` uses a C-dependent transition-head gain and produces valid `C*_dyn` values, but remains exploratory until scaled and paired with residual null controls.
 
 ## Current interpretation
 
