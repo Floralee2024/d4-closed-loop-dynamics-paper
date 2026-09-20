@@ -77,13 +77,13 @@ def figure_d4a():
 
 
 def figure_d4b():
-    rows = load_csv("d4b_strength_summary_report.csv")
+    rows = load_csv("d4b_formal_gpu/d4b_strength_summary.csv")
     width, height = 1120, 470
     panel_w, panel_gap = 330, 30
     top, plot_h = 75, 280
     lefts = [65 + i * (panel_w + panel_gap) for i in range(3)]
     splits = ["id", "ood_random", "ood_inverted"]
-    parts = svg_start(width, height, "D4b residual desynchronization", "Report-level grouped D4b summary by residual strength and split.")
+    parts = svg_start(width, height, "D4b residual desynchronization", "Formal D4b grouped summary recomputed from 3000 raw configurations.")
     parts.append(text(width / 2, 30, "D4b: residual bypass is associated with phase-marker desynchronization", 17, "middle", weight="500"))
     colors = {"sync_gap": "#2a6fbb", "utility_sensitivity": "#d9772b", "negative_delta_rate": "#2e8b57"}
     for panel, split in enumerate(splits):
@@ -91,8 +91,8 @@ def figure_d4b():
         left = lefts[panel]
         right = left + panel_w
         parts.append(text(left + panel_w / 2, 58, split.replace("ood_", "OOD ").replace("_", " ").title(), 13, "middle", weight="500"))
-        for tick in (0, 5, 10, 15):
-            y = top + plot_h - tick / 15 * plot_h
+        for tick in (0, 4, 8, 12, 16):
+            y = top + plot_h - tick / 16 * plot_h
             parts.append(line(left, y, right, y, "#dddddd", 1, "3 3"))
             if panel == 0:
                 parts.append(text(left - 8, y + 4, tick, 10, "end", "#444"))
@@ -107,7 +107,7 @@ def figure_d4b():
             xs.append(x)
             parts.append(text(x, top + plot_h + 18, row["residual_strength"], 10, "middle"))
         points = {}
-        for key, color, scale in (("sync_gap", colors["sync_gap"], 15), ("utility_sensitivity", colors["utility_sensitivity"], 1), ("negative_delta_rate", colors["negative_delta_rate"], 1)):
+        for key, color, scale in (("sync_gap_mean", colors["sync_gap"], 16), ("utility_sensitivity_mean", colors["utility_sensitivity"], 1), ("negative_delta_rate_mean", colors["negative_delta_rate"], 1)):
             coords = []
             for x, row in zip(xs, sub):
                 value = float(row[key])
@@ -115,7 +115,7 @@ def figure_d4b():
                 coords.append((x, y))
             points[key] = coords
             parts.append(f'<polyline fill="none" stroke="{color}" stroke-width="2.2" points="{" ".join(f"{x:.1f},{y:.1f}" for x, y in coords)}"/>')
-            marker = {"sync_gap": "circle", "utility_sensitivity": "square", "negative_delta_rate": "triangle"}[key]
+            marker = {"sync_gap_mean": "circle", "utility_sensitivity_mean": "square", "negative_delta_rate_mean": "triangle"}[key]
             for x, y in coords:
                 if marker == "circle":
                     parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4" fill="{color}"/>')
@@ -129,7 +129,7 @@ def figure_d4b():
         parts.append(f'<rect x="{x}" y="395" width="13" height="13" fill="{color}"/>')
         parts.append(text(x + 19, 406, label, 11))
         x += 205
-    parts.append(text(65, 445, "Report-level grouped summary; 10 seeds, 5 strengths, 3 splits. Formal per-configuration D4b CSV remains a release gate.", 10, "start", "#666"))
+    parts.append(text(65, 445, "Formal grouped summary from 3000 raw rows; 10 seeds, 5 strengths, 3 splits. Thresholds remain operational and per-C retrained.", 10, "start", "#666"))
     write_svg(FIGURES / "d4b_residual_desynchronization.svg", parts)
 
 

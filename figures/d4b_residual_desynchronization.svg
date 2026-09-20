@@ -1,97 +1,113 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="470" viewBox="0 0 1120 470" role="img" aria-labelledby="title desc">
 <title id="title">D4b residual desynchronization</title>
-<desc id="desc">Report-level grouped D4b summary by residual strength and split.</desc>
+<desc id="desc">Formal D4b grouped summary recomputed from 3000 raw configurations.</desc>
 <rect width="100%" height="100%" fill="#ffffff"/>
 <text x="560.0" y="30" font-size="17px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="500">D4b: residual bypass is associated with phase-marker desynchronization</text>
 <text x="230.0" y="58" font-size="13px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="500">Id</text>
 <line x1="65" y1="355.0" x2="395" y2="355.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
 <text x="57" y="359.0" font-size="10px" text-anchor="end" fill="#444" font-family="Arial, sans-serif" font-weight="400">0</text>
-<line x1="65" y1="261.6666666666667" x2="395" y2="261.6666666666667" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
-<text x="57" y="265.6666666666667" font-size="10px" text-anchor="end" fill="#444" font-family="Arial, sans-serif" font-weight="400">5</text>
-<line x1="65" y1="168.33333333333334" x2="395" y2="168.33333333333334" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
-<text x="57" y="172.33333333333334" font-size="10px" text-anchor="end" fill="#444" font-family="Arial, sans-serif" font-weight="400">10</text>
+<line x1="65" y1="285.0" x2="395" y2="285.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="57" y="289.0" font-size="10px" text-anchor="end" fill="#444" font-family="Arial, sans-serif" font-weight="400">4</text>
+<line x1="65" y1="215.0" x2="395" y2="215.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="57" y="219.0" font-size="10px" text-anchor="end" fill="#444" font-family="Arial, sans-serif" font-weight="400">8</text>
+<line x1="65" y1="145.0" x2="395" y2="145.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="57" y="149.0" font-size="10px" text-anchor="end" fill="#444" font-family="Arial, sans-serif" font-weight="400">12</text>
 <line x1="65" y1="75.0" x2="395" y2="75.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
-<text x="57" y="79.0" font-size="10px" text-anchor="end" fill="#444" font-family="Arial, sans-serif" font-weight="400">15</text>
+<text x="57" y="79.0" font-size="10px" text-anchor="end" fill="#444" font-family="Arial, sans-serif" font-weight="400">16</text>
 <line x1="65" y1="75" x2="65" y2="355" stroke="#555" stroke-width="1.2"/>
 <line x1="65" y1="355" x2="395" y2="355" stroke="#555" stroke-width="1.2"/>
 <text x="16" y="215.0" font-size="11px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400" transform="rotate(-90 16 215.0)">Sync gap</text>
 <text x="1100" y="215.0" font-size="11px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400" transform="rotate(90 1100 215.0)">Rate / sensitivity</text>
 <text x="100.0" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.0</text>
-<text x="191.66666666666669" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.1</text>
-<text x="283.33333333333337" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.5</text>
+<text x="168.75" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.1</text>
+<text x="237.5" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.25</text>
+<text x="306.25" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.5</text>
 <text x="375.0" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">1.0</text>
-<polyline fill="none" stroke="#2a6fbb" stroke-width="2.2" points="100.0,306.5 191.7,215.0 283.3,140.3 375.0,160.9"/>
-<circle cx="100.0" cy="306.5" r="4" fill="#2a6fbb"/>
-<circle cx="191.7" cy="215.0" r="4" fill="#2a6fbb"/>
-<circle cx="283.3" cy="140.3" r="4" fill="#2a6fbb"/>
-<circle cx="375.0" cy="160.9" r="4" fill="#2a6fbb"/>
-<polyline fill="none" stroke="#d9772b" stroke-width="2.2" points="100.0,222.0 191.7,344.6 283.3,347.2 375.0,347.2"/>
-<rect x="96.5" y="218.5" width="7" height="7" fill="#d9772b"/>
-<rect x="188.2" y="341.1" width="7" height="7" fill="#d9772b"/>
-<rect x="279.8" y="343.7" width="7" height="7" fill="#d9772b"/>
-<rect x="371.5" y="343.7" width="7" height="7" fill="#d9772b"/>
-<polyline fill="none" stroke="#2e8b57" stroke-width="2.2" points="100.0,285.0 191.7,257.0 283.3,117.0 375.0,173.0"/>
-<path d="M 100.0 281.0 L 96.0 288.0 L 104.0 288.0 Z" fill="#2e8b57"/>
-<path d="M 191.7 253.0 L 187.7 260.0 L 195.7 260.0 Z" fill="#2e8b57"/>
-<path d="M 283.3 113.0 L 279.3 120.0 L 287.3 120.0 Z" fill="#2e8b57"/>
-<path d="M 375.0 169.0 L 371.0 176.0 L 379.0 176.0 Z" fill="#2e8b57"/>
+<polyline fill="none" stroke="#2a6fbb" stroke-width="2.2" points="100.0,325.2 168.8,257.0 237.5,233.6 306.2,156.9 375.0,138.9"/>
+<circle cx="100.0" cy="325.2" r="4" fill="#2a6fbb"/>
+<circle cx="168.8" cy="257.0" r="4" fill="#2a6fbb"/>
+<circle cx="237.5" cy="233.6" r="4" fill="#2a6fbb"/>
+<circle cx="306.2" cy="156.9" r="4" fill="#2a6fbb"/>
+<circle cx="375.0" cy="138.9" r="4" fill="#2a6fbb"/>
+<polyline fill="none" stroke="#d9772b" stroke-width="2.2" points="100.0,223.5 168.8,346.5 237.5,348.1 306.2,347.8 375.0,349.1"/>
+<rect x="96.5" y="220.0" width="7" height="7" fill="#d9772b"/>
+<rect x="165.2" y="343.0" width="7" height="7" fill="#d9772b"/>
+<rect x="234.0" y="344.6" width="7" height="7" fill="#d9772b"/>
+<rect x="302.8" y="344.3" width="7" height="7" fill="#d9772b"/>
+<rect x="371.5" y="345.6" width="7" height="7" fill="#d9772b"/>
+<polyline fill="none" stroke="#2e8b57" stroke-width="2.2" points="100.0,257.0 168.8,285.0 237.5,187.0 306.2,117.0 375.0,159.0"/>
+<path d="M 100.0 253.0 L 96.0 260.0 L 104.0 260.0 Z" fill="#2e8b57"/>
+<path d="M 168.8 281.0 L 164.8 288.0 L 172.8 288.0 Z" fill="#2e8b57"/>
+<path d="M 237.5 183.0 L 233.5 190.0 L 241.5 190.0 Z" fill="#2e8b57"/>
+<path d="M 306.2 113.0 L 302.2 120.0 L 310.2 120.0 Z" fill="#2e8b57"/>
+<path d="M 375.0 155.0 L 371.0 162.0 L 379.0 162.0 Z" fill="#2e8b57"/>
 <text x="590.0" y="58" font-size="13px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="500">Ood Random</text>
 <line x1="425" y1="355.0" x2="755" y2="355.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
-<line x1="425" y1="261.6666666666667" x2="755" y2="261.6666666666667" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
-<line x1="425" y1="168.33333333333334" x2="755" y2="168.33333333333334" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="425" y1="285.0" x2="755" y2="285.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="425" y1="215.0" x2="755" y2="215.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="425" y1="145.0" x2="755" y2="145.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
 <line x1="425" y1="75.0" x2="755" y2="75.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
 <line x1="425" y1="75" x2="425" y2="355" stroke="#555" stroke-width="1.2"/>
 <line x1="425" y1="355" x2="755" y2="355" stroke="#555" stroke-width="1.2"/>
 <text x="460.0" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.0</text>
-<text x="551.6666666666666" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.1</text>
-<text x="643.3333333333334" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.5</text>
+<text x="528.75" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.1</text>
+<text x="597.5" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.25</text>
+<text x="666.25" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.5</text>
 <text x="735.0" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">1.0</text>
-<polyline fill="none" stroke="#2a6fbb" stroke-width="2.2" points="460.0,301.8 551.7,169.6 643.3,110.5 735.0,101.1"/>
-<circle cx="460.0" cy="301.8" r="4" fill="#2a6fbb"/>
-<circle cx="551.7" cy="169.6" r="4" fill="#2a6fbb"/>
-<circle cx="643.3" cy="110.5" r="4" fill="#2a6fbb"/>
-<circle cx="735.0" cy="101.1" r="4" fill="#2a6fbb"/>
-<polyline fill="none" stroke="#d9772b" stroke-width="2.2" points="460.0,222.6 551.7,335.7 643.3,343.0 735.0,344.6"/>
-<rect x="456.5" y="219.1" width="7" height="7" fill="#d9772b"/>
-<rect x="548.2" y="332.2" width="7" height="7" fill="#d9772b"/>
-<rect x="639.8" y="339.5" width="7" height="7" fill="#d9772b"/>
-<rect x="731.5" y="341.1" width="7" height="7" fill="#d9772b"/>
-<polyline fill="none" stroke="#2e8b57" stroke-width="2.2" points="460.0,285.0 551.7,215.0 643.3,131.0 735.0,159.0"/>
-<path d="M 460.0 281.0 L 456.0 288.0 L 464.0 288.0 Z" fill="#2e8b57"/>
-<path d="M 551.7 211.0 L 547.7 218.0 L 555.7 218.0 Z" fill="#2e8b57"/>
-<path d="M 643.3 127.0 L 639.3 134.0 L 647.3 134.0 Z" fill="#2e8b57"/>
-<path d="M 735.0 155.0 L 731.0 162.0 L 739.0 162.0 Z" fill="#2e8b57"/>
+<polyline fill="none" stroke="#2a6fbb" stroke-width="2.2" points="460.0,313.9 528.8,218.1 597.5,214.1 666.2,135.4 735.0,86.0"/>
+<circle cx="460.0" cy="313.9" r="4" fill="#2a6fbb"/>
+<circle cx="528.8" cy="218.1" r="4" fill="#2a6fbb"/>
+<circle cx="597.5" cy="214.1" r="4" fill="#2a6fbb"/>
+<circle cx="666.2" cy="135.4" r="4" fill="#2a6fbb"/>
+<circle cx="735.0" cy="86.0" r="4" fill="#2a6fbb"/>
+<polyline fill="none" stroke="#d9772b" stroke-width="2.2" points="460.0,221.5 528.8,338.8 597.5,343.3 666.2,344.0 735.0,345.0"/>
+<rect x="456.5" y="218.0" width="7" height="7" fill="#d9772b"/>
+<rect x="525.2" y="335.3" width="7" height="7" fill="#d9772b"/>
+<rect x="594.0" y="339.8" width="7" height="7" fill="#d9772b"/>
+<rect x="662.8" y="340.5" width="7" height="7" fill="#d9772b"/>
+<rect x="731.5" y="341.5" width="7" height="7" fill="#d9772b"/>
+<polyline fill="none" stroke="#2e8b57" stroke-width="2.2" points="460.0,271.0 528.8,215.0 597.5,187.0 666.2,131.0 735.0,131.0"/>
+<path d="M 460.0 267.0 L 456.0 274.0 L 464.0 274.0 Z" fill="#2e8b57"/>
+<path d="M 528.8 211.0 L 524.8 218.0 L 532.8 218.0 Z" fill="#2e8b57"/>
+<path d="M 597.5 183.0 L 593.5 190.0 L 601.5 190.0 Z" fill="#2e8b57"/>
+<path d="M 666.2 127.0 L 662.2 134.0 L 670.2 134.0 Z" fill="#2e8b57"/>
+<path d="M 735.0 127.0 L 731.0 134.0 L 739.0 134.0 Z" fill="#2e8b57"/>
 <text x="950.0" y="58" font-size="13px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="500">Ood Inverted</text>
 <line x1="785" y1="355.0" x2="1115" y2="355.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
-<line x1="785" y1="261.6666666666667" x2="1115" y2="261.6666666666667" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
-<line x1="785" y1="168.33333333333334" x2="1115" y2="168.33333333333334" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="785" y1="285.0" x2="1115" y2="285.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="785" y1="215.0" x2="1115" y2="215.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="785" y1="145.0" x2="1115" y2="145.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
 <line x1="785" y1="75.0" x2="1115" y2="75.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
 <line x1="785" y1="75" x2="785" y2="355" stroke="#555" stroke-width="1.2"/>
 <line x1="785" y1="355" x2="1115" y2="355" stroke="#555" stroke-width="1.2"/>
 <text x="820.0" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.0</text>
-<text x="911.6666666666666" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.1</text>
-<text x="1003.3333333333334" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.5</text>
+<text x="888.75" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.1</text>
+<text x="957.5" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.25</text>
+<text x="1026.25" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">0.5</text>
 <text x="1095.0" y="373" font-size="10px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="400">1.0</text>
-<polyline fill="none" stroke="#2a6fbb" stroke-width="2.2" points="820.0,281.3 911.7,187.9 1003.3,151.5 1095.0,136.6"/>
-<circle cx="820.0" cy="281.3" r="4" fill="#2a6fbb"/>
-<circle cx="911.7" cy="187.9" r="4" fill="#2a6fbb"/>
-<circle cx="1003.3" cy="151.5" r="4" fill="#2a6fbb"/>
-<circle cx="1095.0" cy="136.6" r="4" fill="#2a6fbb"/>
-<polyline fill="none" stroke="#d9772b" stroke-width="2.2" points="820.0,223.7 911.7,295.6 1003.3,313.8 1095.0,315.0"/>
-<rect x="816.5" y="220.2" width="7" height="7" fill="#d9772b"/>
-<rect x="908.2" y="292.1" width="7" height="7" fill="#d9772b"/>
-<rect x="999.8" y="310.3" width="7" height="7" fill="#d9772b"/>
-<rect x="1091.5" y="311.5" width="7" height="7" fill="#d9772b"/>
-<polyline fill="none" stroke="#2e8b57" stroke-width="2.2" points="820.0,285.0 911.7,243.0 1003.3,117.0 1095.0,145.0"/>
+<polyline fill="none" stroke="#2a6fbb" stroke-width="2.2" points="820.0,311.2 888.8,228.6 957.5,256.7 1026.2,177.6 1095.0,114.4"/>
+<circle cx="820.0" cy="311.2" r="4" fill="#2a6fbb"/>
+<circle cx="888.8" cy="228.6" r="4" fill="#2a6fbb"/>
+<circle cx="957.5" cy="256.7" r="4" fill="#2a6fbb"/>
+<circle cx="1026.2" cy="177.6" r="4" fill="#2a6fbb"/>
+<circle cx="1095.0" cy="114.4" r="4" fill="#2a6fbb"/>
+<polyline fill="none" stroke="#d9772b" stroke-width="2.2" points="820.0,224.5 888.8,303.0 957.5,315.8 1026.2,311.8 1095.0,312.8"/>
+<rect x="816.5" y="221.0" width="7" height="7" fill="#d9772b"/>
+<rect x="885.2" y="299.5" width="7" height="7" fill="#d9772b"/>
+<rect x="954.0" y="312.3" width="7" height="7" fill="#d9772b"/>
+<rect x="1022.8" y="308.3" width="7" height="7" fill="#d9772b"/>
+<rect x="1091.5" y="309.3" width="7" height="7" fill="#d9772b"/>
+<polyline fill="none" stroke="#2e8b57" stroke-width="2.2" points="820.0,285.0 888.8,229.0 957.5,201.0 1026.2,117.0 1095.0,131.0"/>
 <path d="M 820.0 281.0 L 816.0 288.0 L 824.0 288.0 Z" fill="#2e8b57"/>
-<path d="M 911.7 239.0 L 907.7 246.0 L 915.7 246.0 Z" fill="#2e8b57"/>
-<path d="M 1003.3 113.0 L 999.3 120.0 L 1007.3 120.0 Z" fill="#2e8b57"/>
-<path d="M 1095.0 141.0 L 1091.0 148.0 L 1099.0 148.0 Z" fill="#2e8b57"/>
+<path d="M 888.8 225.0 L 884.8 232.0 L 892.8 232.0 Z" fill="#2e8b57"/>
+<path d="M 957.5 197.0 L 953.5 204.0 L 961.5 204.0 Z" fill="#2e8b57"/>
+<path d="M 1026.2 113.0 L 1022.2 120.0 L 1030.2 120.0 Z" fill="#2e8b57"/>
+<path d="M 1095.0 127.0 L 1091.0 134.0 L 1099.0 134.0 Z" fill="#2e8b57"/>
 <rect x="245" y="395" width="13" height="13" fill="#2a6fbb"/>
 <text x="264" y="406" font-size="11px" text-anchor="start" fill="#222" font-family="Arial, sans-serif" font-weight="400">sync gap</text>
 <rect x="450" y="395" width="13" height="13" fill="#d9772b"/>
 <text x="469" y="406" font-size="11px" text-anchor="start" fill="#222" font-family="Arial, sans-serif" font-weight="400">utility sensitivity</text>
 <rect x="655" y="395" width="13" height="13" fill="#2e8b57"/>
 <text x="674" y="406" font-size="11px" text-anchor="start" fill="#222" font-family="Arial, sans-serif" font-weight="400">dynamics-first rate</text>
-<text x="65" y="445" font-size="10px" text-anchor="start" fill="#666" font-family="Arial, sans-serif" font-weight="400">Report-level grouped summary; 10 seeds, 5 strengths, 3 splits. Formal per-configuration D4b CSV remains a release gate.</text>
+<text x="65" y="445" font-size="10px" text-anchor="start" fill="#666" font-family="Arial, sans-serif" font-weight="400">Formal grouped summary from 3000 raw rows; 10 seeds, 5 strengths, 3 splits. Thresholds remain operational and per-C retrained.</text>
 </svg>

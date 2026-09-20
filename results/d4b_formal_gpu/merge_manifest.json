@@ -1,0 +1,99 @@
+{
+  "args": {
+    "out_dir": "outputs/formal_d4b_gpu_merged",
+    "device": "cuda",
+    "amp": "auto",
+    "tf32": true,
+    "matmul_precision": "high",
+    "num_workers": 0,
+    "prefetch_factor": 2,
+    "persistent_workers": false,
+    "eval_batch_size": 2048,
+    "compile": false,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "Ks": [
+      8,
+      16
+    ],
+    "Cs": [
+      0.0,
+      0.5,
+      1.0,
+      2.0,
+      3.0,
+      5.0,
+      8.0,
+      12.0,
+      16.0,
+      24.0
+    ],
+    "variants": [
+      "original"
+    ],
+    "residual_strengths": [
+      0.0,
+      0.1,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "include_continuous_only": false,
+    "splits": [
+      "id",
+      "ood_random",
+      "ood_inverted"
+    ],
+    "steps": 300,
+    "batch_size": 512,
+    "n_train": 2048,
+    "n_test": 512,
+    "seq_len": 12,
+    "obs_dim": 32,
+    "hidden_dim": 96,
+    "embed_dim": 16,
+    "lr": 0.002,
+    "frac": 0.9,
+    "min_gain": 0.1,
+    "rank_min_gain": 0.05,
+    "dyn_min_gain": 0.05,
+    "c_scale": 2.0,
+    "world_seed": 1234,
+    "verbose": false,
+    "torch_threads": 0,
+    "sync_tol": 1.0,
+    "early_c": 2.0,
+    "late_c": 8.0,
+    "no_plots": true
+  },
+  "train_config": {
+    "steps": 300,
+    "batch_size": 512,
+    "lr": 0.002,
+    "weight_decay": 0.0001,
+    "outcome_coef": 0.5,
+    "transition_coef_base": 0.2,
+    "usage_coef_base": 0.06,
+    "cond_entropy_coef": 0.01,
+    "grad_clip": 1.0,
+    "tau_start": 1.2,
+    "tau_min": 0.35
+  },
+  "merged_from": [
+    "outputs/formal_d4b_gpu_chunk_0",
+    "outputs/formal_d4b_gpu_chunk_1",
+    "outputs/formal_d4b_gpu_chunk_2",
+    "outputs/formal_d4b_gpu_chunk_3"
+  ],
+  "merged_rows": 3000
+}

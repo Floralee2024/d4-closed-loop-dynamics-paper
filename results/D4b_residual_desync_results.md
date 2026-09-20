@@ -1,5 +1,7 @@
 # D4b Residual Desynchronization Results
 
+> **Archive note.** This is the pre-release report-level summary copied from the source archive. The formal GPU run and machine-readable 3,000-row results supersede these grouped values for the manuscript: see `results/d4b_formal_gpu/`.
+
 Run summary:
 
 - 3000 configurations

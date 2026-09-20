@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -14,6 +15,7 @@ def load_d4b_module(path: Path):
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Cannot load D4b module: {path}")
     module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
@@ -39,20 +41,27 @@ def main() -> None:
         with config_path.open("r", encoding="utf-8") as handle:
             configs.append(json.load(handle))
         frames.append(pd.read_csv(curves_path))
-    first_args = configs[0]["args"]
+    first_args = dict(configs[0]["args"])
+    comparable_args = dict(first_args)
+    comparable_args.pop("seeds", None)
+    comparable_args.pop("out_dir", None)
     for config in configs[1:]:
-        if config["args"] != first_args:
+        candidate_args = dict(config["args"])
+        candidate_args.pop("seeds", None)
+        candidate_args.pop("out_dir", None)
+        if candidate_args != comparable_args:
             raise ValueError("Chunk configurations differ; refusing to merge mismatched runs")
     curves = pd.concat(frames, ignore_index=True)
     key_cols = ["mode", "residual_lambda", "variant", "seed", "K", "C", "split"]
     duplicates = curves[curves.duplicated(key_cols, keep=False)]
     if not duplicates.empty:
         raise ValueError(f"Duplicate condition rows found: {len(duplicates)}")
-    expected_per_chunk = (len(first_args["seeds"]) * len(first_args["residual_strengths"]) * len(first_args["variants"]) * len(first_args["Ks"]) * len(first_args["Cs"]) * len(first_args["splits"]))
-    for frame, chunk_dir in zip(frames, args.chunk_dirs):
+    condition_count = len(first_args["residual_strengths"]) * len(first_args["variants"]) * len(first_args["Ks"]) * len(first_args["Cs"]) * len(first_args["splits"])
+    for frame, config, chunk_dir in zip(frames, configs, args.chunk_dirs):
+        expected_per_chunk = len(config["args"]["seeds"]) * condition_count
         if len(frame) != expected_per_chunk:
             raise ValueError(f"Incomplete chunk {chunk_dir}: {len(frame)} rows, expected {expected_per_chunk}")
-    expected_total = expected_per_chunk * len(frames)
+    expected_total = sum(len(config["args"]["seeds"]) * condition_count for config in configs)
     if len(curves) != expected_total:
         raise ValueError(f"Merged row count {len(curves)} != expected {expected_total}")
 
@@ -117,6 +126,7 @@ def main() -> None:
     merged_config = dict(configs[0])
     merged_config["args"] = dict(first_args)
     merged_config["args"]["seeds"] = sorted(int(x) for frame in frames for x in frame["seed"].unique())
+    merged_config["args"]["out_dir"] = str(args.out_dir)
     merged_config["merged_from"] = [str(path) for path in args.chunk_dirs]
     merged_config["merged_rows"] = int(len(curves))
     with (args.out_dir / "merge_manifest.json").open("w", encoding="utf-8") as handle:

@@ -14,12 +14,12 @@ The central result is hierarchical rather than scalar: the three markers are sep
 
 ## Status
 
-`paper.md` is a complete evidence-bounded manuscript draft. It is intentionally explicit about two publication gates that are not yet closed:
+`paper.md` is a complete evidence-bounded manuscript draft. The raw-export gate is closed for the formal per-C retraining estimand; the fixed-model and mechanism gates remain open:
 
-1. the formal D4b run is currently preserved as report-level grouped results; the formal per-configuration CSV was not found in the source output directory;
+1. the formal D4b release now contains the per-configuration CSV, four shard configs, a merge manifest, provenance, and recomputed summaries;
 2. the current D4b implementation retrains a fresh model for every `C`, so the reported curves are operational thresholds under per-`C` retraining, not a fixed-trained-model intervention sweep.
 
-These are not cosmetic caveats. The first limits auditability; the second limits the causal interpretation of a `C` curve. The manuscript therefore does not describe `C*` as a continuous critical constant or claim that residual bypass alone caused the observed phase ordering.
+The remaining caveat limits causal interpretation rather than data auditability. The manuscript therefore does not describe `C*` as a continuous critical constant or claim that residual bypass alone caused the observed phase ordering.
 
 ## Repository layout
 
@@ -30,6 +30,7 @@ SOURCES.md                       provenance of local artifacts
 results/d4a_repair_alignment.csv formal D4a alignment table
 results/D4_integrated_report.md  source D4 summary
 results/D4b_residual_desync_results.md
+results/d4b_formal_gpu/        formal raw D4b table, summaries, and provenance
 source/                          copied experiment entry points
   d4_complete_protocol.py        unified entry point
   d2_d4_protocol.py              D4a implementation
@@ -49,9 +50,9 @@ python .\source\d4_complete_protocol.py --stage smoke --device auto
 python .\source\d4_complete_protocol.py --stage all --device cuda --tf32 --persistent-workers
 ```
 
-The original full D4b command is recorded in `source/D4_PROTOCOL.md`. It is expensive and should only be run after the fixed-model sweep and raw-output export gates described in `CLAIMS_AND_LIMITS.md` are addressed. The smoke command is a command-chain check; it is not a substitute for the formal result.
+The original full D4b command is recorded in `source/D4_PROTOCOL.md`; the verified GPU release is archived under `results/d4b_formal_gpu/`. The smoke command is a command-chain check; it is not a substitute for the formal result.
 
-The local artifact check also runs `repro/audit_claim_numbers.py`, which recomputes the headline D4a means and checks the D4b report-level table shape and separation ranges.
+The local artifact check also runs `repro/audit_claim_numbers.py`, which recomputes the headline D4a means and checks the formal D4b release shape and separation ranges.
 
 For the formal CUDA sweep, `repro/run_formal_d4b_gpu.sh` launches the ten-seed run without credentials. When a run is split across GPUs or background jobs, `repro/merge_d4b_chunks.py` validates complete, non-overlapping raw curves and recomputes every official summary.
 
@@ -67,7 +68,7 @@ The first hard-ID probe is archived in `results/fixed_model_sweep_probe/`; it fo
 
 ## Current interpretation
 
-The strongest defensible statement from the archived evidence is:
+The strongest defensible statement from the released evidence is:
 
 > In this synthetic symbolic-bottleneck protocol, representation geometry, dynamics structure, and downstream utility do not share one operational threshold. Under the reported per-`C` retraining protocol, the dynamics marker is closer to utility than the rank/equivalence marker, while residual bypass is associated with larger phase-marker separation and lower measured utility sensitivity.
 

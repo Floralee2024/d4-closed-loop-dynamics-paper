@@ -16,6 +16,7 @@ The files in this repository are copied from the local D4 experiment archive. Th
 | `source/summarize_d4.py` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\summarize_d4.py` | integrated report generator |
 | `source/D4_PROTOCOL.md` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\D4_PROTOCOL.md` | original commands and protocol notes |
 | `repro/fixed_model_sweep.py` | repository-local diagnostic | fixed-model/common-random-number probe |
+| `results/d4b_formal_gpu/` | AutoDL RTX 3080 Ti run, merged locally from four shards | formal 3,000-row D4b raw table and summaries |
 
 ## Repository-local reproducibility patch
 
@@ -26,10 +27,10 @@ the augmented formulation preserves the unregularized intercept and ridge
 penalty while remaining stable for rank-deficient symbolic features. Archived
 formal D4a numbers were not silently recomputed after this patch.
 
-## Missing formal artifact
+## Formal D4b artifact
 
-The source archive contains `protocol_d4b_smoke/d4b_by_strength.csv`, but this is a smoke run and is not the formal 3000-configuration D4b output. It is therefore not used as formal evidence in `paper.md`.
+The formal GPU release contains one raw row per `(seed, residual_strength, variant, K, C, split)`, four shard configs, a merge manifest, and recomputed summaries. A local independent merge reproduced the remote summaries exactly: 3,000 raw rows and 300 seed-level threshold rows. The source archive also contains `protocol_d4b_smoke/d4b_by_strength.csv`; that smoke run is kept separate and was not merged into the formal table.
 
 ## Reproducibility note
 
-The source implementation currently calls `set_seed(...)` and constructs a new `SymbolicBottleneckModel` inside the loop over `C`. The manuscript treats this as part of the estimand definition and flags it as a release gate rather than silently interpreting the curve as a fixed-model intervention.
+The source implementation currently calls `set_seed(...)` and constructs a new `SymbolicBottleneckModel` inside the loop over `C`. The manuscript treats this as part of the estimand definition and keeps the fixed-model/common-random-number analysis as an open causal gate rather than silently interpreting the curve as a fixed-model intervention.

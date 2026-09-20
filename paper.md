@@ -6,9 +6,9 @@
 
 Many analyses of learned bottlenecks summarize learning with a single critical control value, denoted here by `C*`. That summary is only adequate if representation geometry, internal dynamics, and downstream utility change at the same point. We test this assumption in a synthetic symbolic-bottleneck protocol with three operational phase markers: rank/equivalence (`C*_rank`), dynamics (`C*_dyn`), and downstream utility (`C*_util`).
 
-In D4a, an eight-cell formal alignment table covers two splits, two channel variants, two bottleneck sizes, and 20 seeds per cell. The archived integrated report gives mean absolute separations of 0.312 between `C*_dyn` and `C*_util`, 3.212 between a null-dynamics marker and utility, and 12.769 between `C*_rank` and utility; the dynamics marker is closer to utility than the rank/equivalence marker in 93.8% of the reported comparisons. In D4b, the archived grouped summary covers 3,000 configurations, 10 seeds, five residual strengths, and three splits. Introducing a continuous residual bypass is accompanied by a rise in `sync_gap = |C*_dyn - C*_rank|` from 2.60–3.95 at zero residual to 7.50–13.60 in the reported nonzero-strength groups, while utility sensitivity falls from approximately 0.47 to 0.03–0.21. The rate at which dynamics appears before rank/equivalence also increases from 0.25 at zero residual to as high as 0.80–0.85.
+In D4a, an eight-cell formal alignment table covers two splits, two channel variants, two bottleneck sizes, and 20 seeds per cell. The archived integrated report gives mean absolute separations of 0.312 between `C*_dyn` and `C*_util`, 3.212 between a null-dynamics marker and utility, and 12.769 between `C*_rank` and utility; the dynamics marker is closer to utility than the rank/equivalence marker in 93.8% of the reported comparisons. In D4b, we now release 3,000 raw configuration rows covering 10 seeds, five residual strengths, two bottleneck sizes, and three splits. Relative to zero residual (`sync_gap` 1.70–2.50; utility sensitivity 0.466–0.477), nonzero residual conditions show larger separation (`sync_gap` 5.62–15.37) and lower utility sensitivity (0.021–0.186). Dynamics-first ordering reaches rates as high as 0.85, but the pattern is not monotone in every split. The utility threshold itself is often invalid under the preset gain gate once residual strength is nonzero, so utility sensitivity and threshold validity are reported separately.
 
-The result is not that one universal critical constant has been discovered. In the current implementation, each point on the `C` curve is produced by a fresh training run, and the threshold is extracted from a discrete grid after local smoothing. A 16-cell fixed-model diagnostic did not close this causal gate: all cells had zero dynamics-score gain because the current dynamics metric is based on hard symbol IDs that are C-invariant after weights are frozen. The defensible conclusion is narrower: within this synthetic protocol, rank/equivalence, dynamics, and utility are separable phase markers; the dynamics marker is the most utility-aligned of the tested structural markers; and residual bypass is associated with a reordering of those markers. A C-dependent fixed-model dynamics metric, formal raw D4b export, and mechanism controls are required before making a stronger causal claim.
+The result is not that one universal critical constant has been discovered. In the current implementation, each point on the `C` curve is produced by a fresh training run, and the threshold is extracted from a discrete grid after local smoothing. The formal D4b raw export closes the data-audit gate, but not the causal gate: a 16-cell fixed-model diagnostic did not recover the current hard-ID dynamics score because it is C-invariant after weights are frozen. The defensible conclusion is narrower: within this synthetic protocol, rank/equivalence, dynamics, and utility are separable phase markers; the dynamics marker is the most utility-aligned of the tested structural markers in D4a; and residual bypass is associated with a reordering of those markers under per-C retraining. A fixed-model/common-random-number analysis and mechanism controls are still required before making a stronger causal claim.
 
 ## 1. Introduction
 
@@ -22,9 +22,9 @@ The paper makes three contributions.
 
 1. It replaces a scalar-threshold question with an explicit phase-marker decomposition.
 2. It reports an empirical alignment result: the dynamics marker is closer to utility than the rank/equivalence marker in the archived D4a result.
-3. It turns the residual bypass into a desynchronization hypothesis and reports the associated ordering statistics across ID and OOD splits.
+3. It turns the residual bypass into a desynchronization hypothesis and reports the associated ordering statistics across ID and OOD splits from a machine-readable formal raw table.
 
-The paper also makes the limits of these contributions explicit. The current D4b archive preserves the formal grouped summary but not the formal per-configuration CSV. More importantly, the implementation trains a new model separately for every `C`, so the current curves estimate an operational threshold under per-`C` retraining. They do not yet identify the effect of changing `C` in a fixed trained system. These limitations shape the claim ceiling throughout the manuscript.
+The paper also makes the limits of these contributions explicit. The formal D4b per-configuration CSV is now released with shard manifests and an independent merge check. More importantly, the implementation trains a new model separately for every `C`, so the current curves estimate an operational threshold under per-`C` retraining. They do not yet identify the effect of changing `C` in a fixed trained system, and nonzero residual conditions frequently fail the utility gain gate. These limitations shape the claim ceiling throughout the manuscript.
 
 ## 2. Research question and experiment card
 
@@ -132,7 +132,7 @@ D4b uses:
 - 10 `C` values;
 - 3,000 reported configurations, before grouping by strength, `K`, and split.
 
-The grouped report records `sync_gap`, sync rate, utility sensitivity, and the negative-delta rate. The principal pattern is interpreted as an ordering change: as residual bypass is introduced, dynamics can become operationally available earlier than rank/equivalence, while the downstream utility becomes less sensitive to further movement along the `C` grid.
+The formal raw table records the raw metrics for every configuration; `cstar_summary.csv` derives seed-level thresholds, and the grouped summaries report `sync_gap`, sync rate, utility sensitivity, and the negative-delta rate. The principal pattern is interpreted as an ordering change: as residual bypass is introduced, dynamics can become operationally available earlier than rank/equivalence, while the downstream utility becomes less sensitive to further movement along the `C` grid.
 
 ### 3.5 Important implementation qualification
 
@@ -142,7 +142,7 @@ We retain this design in the current report because it is the protocol that gene
 
 ### 3.6 Statistical unit and aggregation
 
-Seeds and configurations are the sampling units in the archived summaries. The report-level means should not be read as if every grid point were an independent replicate. In particular, all threshold contrasts within one seed share a training condition and are statistically dependent. The next release should provide seed-level rows and confidence intervals or hierarchical uncertainty summaries rather than only grouped means.
+Seeds and configurations are the sampling units in the released summaries. The raw table and `cstar_summary.csv` provide seed-level rows, but the grouped means should not be read as if every grid point were an independent replicate. In particular, all threshold contrasts within one seed share a training condition and are statistically dependent. Confidence intervals or hierarchical uncertainty summaries remain future work.
 
 ## 4. Results
 
@@ -179,45 +179,52 @@ The D4a table supports three observations. First, all eight cells report valid d
 
 ### 4.2 D4b: residual bypass is associated with desynchronization
 
-The formal D4b grouped report has the following strength-level summary. These are report-level aggregates; the formal per-configuration table is a release gate, not silently reconstructed from the smoke output.
+The formal D4b run produced 3,000 raw rows and the following strength-level summary. Each row averages the seed-level `cstar_summary.csv` values for one residual strength and split; `N` is the number of valid `sync_gap` seed-level rows.
 
-| Residual strength | Split | `sync_gap` | Sync rate | Utility sensitivity | Negative-delta rate |
-| ---: | --- | ---: | ---: | ---: | ---: |
-| 0.0 | id | 2.60 | 0.60 | 0.475 | 0.25 |
-| 0.0 | ood_inverted | 3.95 | 0.65 | 0.469 | 0.25 |
-| 0.0 | ood_random | 2.85 | 0.60 | 0.473 | 0.25 |
-| 0.1 | id | 7.50 | 0.45 | 0.037 | 0.35 |
-| 0.1 | ood_inverted | 8.95 | 0.40 | 0.212 | 0.40 |
-| 0.1 | ood_random | 9.93 | 0.35 | 0.069 | 0.50 |
-| 0.5 | id | 11.50 | 0.05 | 0.028 | 0.85 |
-| 0.5 | ood_inverted | 10.90 | 0.05 | 0.147 | 0.85 |
-| 0.5 | ood_random | 13.10 | 0.05 | 0.043 | 0.80 |
-| 1.0 | id | 10.40 | 0.15 | 0.028 | 0.65 |
-| 1.0 | ood_inverted | 11.70 | 0.20 | 0.143 | 0.75 |
-| 1.0 | ood_random | 13.60 | 0.05 | 0.037 | 0.70 |
+| Residual strength | Split | N valid | `sync_gap` | Sync rate | Utility sensitivity | Negative-delta rate |
+| ---: | --- | ---: | ---: | ---: | ---: | ---: |
+| 0.0 | id | 20 | 1.700 | 0.70 | 0.470 | 0.35 |
+| 0.0 | ood_random | 20 | 2.350 | 0.50 | 0.477 | 0.30 |
+| 0.0 | ood_inverted | 20 | 2.500 | 0.55 | 0.466 | 0.25 |
+| 0.1 | id | 20 | 5.600 | 0.40 | 0.030 | 0.25 |
+| 0.1 | ood_random | 20 | 7.825 | 0.30 | 0.058 | 0.50 |
+| 0.1 | ood_inverted | 20 | 7.225 | 0.30 | 0.186 | 0.45 |
+| 0.25 | id | 19 | 6.939 | 0.10 | 0.025 | 0.60 |
+| 0.25 | ood_random | 20 | 8.050 | 0.20 | 0.042 | 0.60 |
+| 0.25 | ood_inverted | 19 | 5.617 | 0.25 | 0.140 | 0.55 |
+| 0.5 | id | 19 | 11.322 | 0.05 | 0.026 | 0.85 |
+| 0.5 | ood_random | 20 | 12.550 | 0.10 | 0.039 | 0.80 |
+| 0.5 | ood_inverted | 19 | 10.139 | 0.00 | 0.154 | 0.85 |
+| 1.0 | id | 20 | 12.350 | 0.20 | 0.021 | 0.70 |
+| 1.0 | ood_random | 19 | 15.372 | 0.05 | 0.036 | 0.80 |
+| 1.0 | ood_inverted | 20 | 13.750 | 0.05 | 0.151 | 0.80 |
 
 ![D4b residual desynchronization](figures/d4b_residual_desynchronization.svg)
 
-**Figure 2.** D4b grouped summary by residual strength and split. The blue series uses the left axis; orange and green use the right axis. This is a report-level aggregate and is not a substitute for the missing formal per-configuration CSV.
+**Figure 2.** Formal D4b grouped summary by residual strength and split. The blue series uses the left axis; orange and green use the right axis. The plotted means are recomputed from the released raw table in `results/d4b_formal_gpu/`.
 
-Relative to the zero-residual groups, nonzero residual groups show larger phase-marker separation and lower utility sensitivity. The negative-delta rate also becomes dominant at moderate and high residual strength, indicating that `C*_dyn < C*_rank` is more common than the reverse ordering. The pattern is not strictly monotone in every split or metric: for example, the `sync_gap` at strength 1.0 is lower than at 0.5 in the ID split. The appropriate summary is therefore “residual bypass is associated with a phase-ordering change” rather than “the effect increases monotonically with residual strength.”
+Relative to the zero-residual groups, every nonzero residual group has lower measured utility sensitivity, and the valid `sync_gap` range shifts upward from 1.70–2.50 to 5.62–15.37. The negative-delta rate becomes dominant at moderate and high residual strength, indicating that `C*_dyn < C*_rank` is more common than the reverse ordering. The pattern is not strictly monotone in every split or metric: the OOD-inverted `sync_gap` at strength 0.25 is lower than at 0.1, and the ID value at strength 1.0 is higher than at 0.5. The appropriate summary is therefore “residual bypass is associated with a phase-ordering change” rather than “the effect increases monotonically with residual strength.”
+
+The utility threshold validity gate is an important qualification. At residual strength 0, `C*_util` is valid in all 20 seed-level rows for each split. At nonzero strengths, it is valid in 0/20 ID rows and 0/20 OOD-random rows; in OOD-inverted it is valid in 13/20, 6/20, 6/20, and 1/20 rows at strengths 0.1, 0.25, 0.5, and 1.0 respectively. Thus the residual result is strongest as evidence about phase-marker separation and utility sensitivity, not as a complete three-threshold comparison at every condition.
 
 ### 4.3 Ordering by bottleneck size and split
 
-The archived report gives the following mean ordering values for rank versus dynamics:
+The formal seed-level table gives the following mean ordering values for rank versus dynamics:
 
 | Residual strength | K | ID | OOD random | OOD inverted |
 | ---: | ---: | --- | --- | --- |
-| 0.0 | 8 | 2.7 vs 2.5 | 2.7 vs 2.3 | 2.7 vs 4.6 |
-| 0.0 | 16 | 6.3 vs 3.1 | 6.3 vs 3.6 | 7.1 vs 3.1 |
-| 0.1 | 8 | 14.9 vs 12.5 | 14.3 vs 12.2 | 14.9 vs 12.2 |
-| 0.1 | 16 | 12.8 vs 12.4 | 13.9 vs 9.6 | 14.7 vs 12.5 |
-| 0.5 | 8 | 17.3 vs 7.9 | 15.6 vs 8.2 | 16.0 vs 7.9 |
-| 0.5 | 16 | 23.2 vs 10.0 | 23.2 vs 5.6 | 21.2 vs 7.6 |
-| 1.0 | 8 | 18.5 vs 12.0 | 16.6 vs 10.4 | 19.6 vs 12.9 |
-| 1.0 | 16 | 22.0 vs 12.8 | 22.0 vs 5.9 | 22.8 vs 8.5 |
+| 0.0 | 8 | 3.00 vs 4.40 | 3.10 vs 4.30 | 3.10 vs 5.10 |
+| 0.0 | 16 | 5.00 vs 4.20 | 6.00 vs 4.50 | 6.20 vs 4.40 |
+| 0.1 | 8 | 10.40 vs 11.60 | 10.80 vs 9.50 | 9.80 vs 9.90 |
+| 0.1 | 16 | 12.40 vs 12.40 | 13.10 vs 9.35 | 12.20 vs 9.85 |
+| 0.25 | 8 | 10.40 vs 7.56 | 10.30 vs 7.10 | 10.40 vs 7.11 |
+| 0.25 | 16 | 14.40 vs 12.70 | 12.80 vs 9.10 | 14.80 vs 11.30 |
+| 0.5 | 8 | 19.11 vs 9.30 | 18.00 vs 9.40 | 18.67 vs 9.90 |
+| 0.5 | 16 | 20.40 vs 10.00 | 20.80 vs 7.50 | 17.60 vs 8.90 |
+| 1.0 | 8 | 21.20 vs 16.80 | 20.40 vs 12.30 | 19.60 vs 13.20 |
+| 1.0 | 16 | 24.00 vs 7.70 | 22.80 vs 3.22 | 23.20 vs 7.70 |
 
-Each entry is `C*_rank vs C*_dyn`; lower dynamics values therefore represent earlier operational dynamics structure. The table shows that the direction of ordering is not a property of the split alone: it changes with residual condition and `K`. This is consistent with a phase-ordering account, but it also motivates the fixed-model and equalized-control reanalysis.
+Each entry is `C*_rank vs C*_dyn`; lower dynamics values therefore represent earlier operational dynamics structure. The formal table shows that the direction of ordering is not a property of the split alone: it changes with residual condition and `K`. This is consistent with a phase-ordering account, but it also motivates the fixed-model and equalized-control reanalysis.
 
 ## 5. Interpretation
 
@@ -233,11 +240,11 @@ This is a mechanism hypothesis, not a demonstrated mediation result. The current
 
 ### 5.3 Why utility sensitivity is not the same as utility
 
-The D4b table reports utility sensitivity to movement along the `C` grid. A lower sensitivity can mean that utility is robust to the bottleneck control because the task is solved through a bypass; it can also mean that the model has saturated, that the threshold estimator has compressed the curve, or that training variability obscures a real effect. Sensitivity should therefore be interpreted together with absolute utility, action accuracy, threshold validity, and raw curves in the next release.
+The D4b table reports utility sensitivity to movement along the `C` grid. A lower sensitivity can mean that utility is robust to the bottleneck control because the task is solved through a bypass; it can also mean that the model has saturated, that the threshold estimator has compressed the curve, or that training variability obscures a real effect. In the formal run, nonzero residual conditions frequently fail the utility gain gate, so sensitivity must be interpreted together with absolute utility, action accuracy, threshold validity, and the released raw curves.
 
 ## 6. Robustness and falsification plan
 
-The current archive provides useful but incomplete robustness evidence.
+The formal archive now provides a complete raw D4b export, but robustness evidence remains incomplete for causal interpretation.
 
 ### 6.1 Already present
 
@@ -272,9 +279,9 @@ Preserve residual norm and compute budget while shuffling residual directions, l
 
 Match parameter count, training steps, optimizer settings, and evaluation budget across residual strengths. If exact matching is impossible, report the imbalance and treat it as a design limitation.
 
-#### Raw-output audit
+#### Raw-output audit (completed for the current D4b estimand)
 
-Publish one row per seed × residual strength × `K` × `C` × split, plus the manifest and code hash. This makes it possible to recompute every grouped statistic and to detect whether missing thresholds were dropped.
+The formal release now publishes one row per seed × residual strength × `K` × `C` × split, four shard configs, a merge manifest, and provenance tied to the experiment source revision. The local merge check recomputes every grouped statistic and detects duplicate or missing conditions. This closes the raw-export gate, but it does not close the fixed-model or mechanism gates.
 
 ### 6.3 A result that would change the paper
 
@@ -283,14 +290,15 @@ If the fixed-model sweep shows that the rank, dynamics, and utility markers alig
 ## 7. Limitations
 
 1. The world is synthetic. The result is a controlled diagnostic, not evidence about natural tasks.
-2. The D4b formal raw table is not present in the archived output directory, so the current public artifact is not yet fully audit-complete.
+2. The formal D4b raw table is now released and audit-complete for the per-C retraining estimand; it does not provide a fixed-model intervention estimand.
 3. The per-`C` retraining design prevents a clean causal interpretation of the `C` sweep.
 4. The operational threshold depends on a discrete grid, local smoothing, a 90% gain fraction, and minimum-gain gates.
-5. The grouped report does not yet provide seed-level uncertainty intervals for every result.
-6. The OOD splits test particular synthetic shifts and should not be interpreted as broad distributional generalization.
-7. The current mechanism story is not separated from optimization, parameter-count, or compute differences.
-8. The linked activation-invariance experiment is not part of the evidence base for this paper. It used a constructionally identical activation path and independent per-`C` random draws, so it should not be used to strengthen the D4 claim without a corrected protocol.
-9. The completed fixed-model probe showed that the current hard-ID dynamics metric is C-invariant after freezing weights; this is an estimand limitation, not a negative result about fixed-model dynamics.
+5. The release provides seed-level rows but not confidence intervals or hierarchical uncertainty intervals for every grouped result.
+6. Nonzero residual conditions often fail the utility gain gate, so `C*_util` is sparse even though utility sensitivity remains measurable.
+7. The OOD splits test particular synthetic shifts and should not be interpreted as broad distributional generalization.
+8. The current mechanism story is not separated from optimization, parameter-count, or compute differences.
+9. The linked activation-invariance experiment is not part of the evidence base for this paper. It used a constructionally identical activation path and independent per-`C` random draws, so it should not be used to strengthen the D4 claim without a corrected protocol.
+10. The completed fixed-model probe showed that the current hard-ID dynamics metric is C-invariant after freezing weights; this is an estimand limitation, not a negative result about fixed-model dynamics.
 
 ## 8. Reproducibility and artifact map
 
@@ -302,8 +310,10 @@ The repository keeps the manuscript separate from copied source artifacts.
 | D4b implementation | `source/d4b_residual_desync_gpu.py` |
 | Unified entry point | `source/d4_complete_protocol.py` |
 | Formal D4a alignment table | `results/d4a_repair_alignment.csv` |
-| D4a/D4b report-level summary | `results/D4_integrated_report.md` |
-| D4b grouped summary | `results/D4b_residual_desync_results.md` |
+| D4a/D4b archived report-level summary | `results/D4_integrated_report.md` |
+| Formal D4b raw table and summaries | `results/d4b_formal_gpu/` |
+| Formal D4b provenance | `results/d4b_formal_gpu/PROVENANCE.md` |
+| D4b archived grouped summary | `results/D4b_residual_desync_results.md` |
 | Fixed-model diagnostic and raw probe | `results/fixed_model_sweep_probe.md` and `results/fixed_model_sweep_probe/` |
 | C-dependent fixed-model diagnostic | `results/fixed_model_sweep_transition_probe.md` and `results/fixed_model_sweep_transition_probe/` |
 | Claim ceiling and release gates | `CLAIMS_AND_LIMITS.md` |
@@ -315,13 +325,13 @@ Run the local artifact check with:
 powershell -ExecutionPolicy Bypass -File .\repro\validate_artifacts.ps1
 ```
 
-This check verifies that the formal D4a table and report artifacts are present and that the D4a schema has eight rows. It intentionally reports, rather than hides, the absence of the formal D4b raw table.
+This check verifies that the formal D4a table, D4b raw release, manifests, and report artifacts are present. It also recomputes the D4a headline numbers and D4b release shape; it does not claim that the fixed-model or mechanism gates are closed.
 
 ## 9. Conclusion
 
-The D4 experiment supports a narrower and more useful statement than “there is one critical coupling.” In the tested symbolic bottleneck, rank/equivalence, dynamics, and downstream utility have different operational phase markers. The dynamics marker is substantially closer to utility than the rank/equivalence marker in the archived D4a result. In the archived D4b summary, continuous residual bypass is associated with larger phase-marker separation, lower utility sensitivity, and more frequent dynamics-first ordering.
+The D4 experiment supports a narrower and more useful statement than “there is one critical coupling.” In the tested symbolic bottleneck, rank/equivalence, dynamics, and downstream utility have different operational phase markers. The dynamics marker is substantially closer to utility than the rank/equivalence marker in the formal D4a result. In the formal D4b per-C retraining estimand, continuous residual bypass is associated with larger phase-marker separation, lower utility sensitivity, and more frequent dynamics-first ordering. The raw release makes this association auditable, while the remaining fixed-model, estimator-sensitivity, and mechanism controls determine how far the interpretation can be strengthened.
 
-The correct next step is not to promote a particular grid point into a universal constant. It is to close the evidence gates: export the formal D4b raw table, rerun a fixed-model/common-random-number sweep, test estimator sensitivity, and add magnitude-matched residual nulls. If those checks preserve the ordering, D4 becomes a publishable controlled study of phase desynchronization. If they do not, the paper still yields a valuable methodological result: scalar C* claims can be artifacts of the training and threshold protocol unless the measured phase is specified.
+The correct next step is not to promote a particular grid point into a universal constant. The raw-export gate is now closed; the remaining work is a fixed-model/common-random-number sweep, estimator sensitivity, and magnitude-matched residual nulls. If those checks preserve the ordering, D4 becomes a stronger controlled study of phase desynchronization. If they do not, the paper still yields a valuable methodological result: scalar C* claims can be artifacts of the training and threshold protocol unless the measured phase is specified.
 
 ## References
 
