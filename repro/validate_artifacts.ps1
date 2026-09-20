@@ -6,8 +6,9 @@ $integrated = Join-Path $repo 'results\D4_integrated_report.md'
 $d4b = Join-Path $repo 'results\D4b_residual_desync_results.md'
 $protocol = Join-Path $repo 'source\D4_PROTOCOL.md'
 $impl = Join-Path $repo 'source\d4b_residual_desync_gpu.py'
+$numberAudit = Join-Path $repo 'repro\audit_claim_numbers.py'
 
-$required = @($alignment, $integrated, $d4b, $protocol, $impl)
+$required = @($alignment, $integrated, $d4b, $protocol, $impl, $numberAudit)
 foreach ($path in $required) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
         throw "Missing required artifact: $path"
@@ -39,4 +40,8 @@ Write-Output "D4a rows: $($rows.Count)"
 Write-Output "D4a splits: $((@($rows | Select-Object -ExpandProperty split -Unique)) -join ', ')"
 Write-Output "D4a variants: $((@($rows | Select-Object -ExpandProperty variant -Unique)) -join ', ')"
 Write-Output 'D4b formal raw CSV: not present in this repository; report-level aggregate is intentionally retained.'
+python $numberAudit
+if ($LASTEXITCODE -ne 0) {
+    throw 'Claim-number audit failed.'
+}
 Write-Output 'Validation passed for the current evidence-bounded repository.'

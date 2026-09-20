@@ -51,6 +51,8 @@ python .\source\d4_complete_protocol.py --stage all --device cuda --tf32 --persi
 
 The original full D4b command is recorded in `source/D4_PROTOCOL.md`. It is expensive and should only be run after the fixed-model sweep and raw-output export gates described in `CLAIMS_AND_LIMITS.md` are addressed. The smoke command is a command-chain check; it is not a substitute for the formal result.
 
+The local artifact check also runs `repro/audit_claim_numbers.py`, which recomputes the headline D4a means and checks the D4b report-level table shape and separation ranges.
+
 ## Current interpretation
 
 The strongest defensible statement from the archived evidence is:
