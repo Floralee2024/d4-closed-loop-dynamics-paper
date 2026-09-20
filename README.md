@@ -31,19 +31,25 @@ results/d4a_repair_alignment.csv formal D4a alignment table
 results/D4_integrated_report.md  source D4 summary
 results/D4b_residual_desync_results.md
 source/                          copied experiment entry points
+  d4_complete_protocol.py        unified entry point
+  d2_d4_protocol.py              D4a implementation
+  experiment_D_pytorch_history_symbol_budget.py
+                                  D4a model dependency
+  d4b_residual_desync_gpu.py     D4b implementation
+  summarize_d4.py                report generator
 repro/                           low-cost validation and rerun notes
 ```
 
 ## Reproduction entry points
 
-The source protocol contains the original smoke and full-run commands. From the `source` directory, the intended commands are:
+The source protocol contains the original smoke and full-run commands. From the repository root, the intended commands are:
 
 ```powershell
-python d4_complete_protocol.py --stage smoke --device auto
-python d4_complete_protocol.py --stage all --device cuda --tf32 --persistent-workers
+python .\source\d4_complete_protocol.py --stage smoke --device auto
+python .\source\d4_complete_protocol.py --stage all --device cuda --tf32 --persistent-workers
 ```
 
-The original full D4b command is recorded in `source/D4_PROTOCOL.md`. It is expensive and should only be run after the fixed-model sweep and raw-output export gates described in `CLAIMS_AND_LIMITS.md` are addressed.
+The original full D4b command is recorded in `source/D4_PROTOCOL.md`. It is expensive and should only be run after the fixed-model sweep and raw-output export gates described in `CLAIMS_AND_LIMITS.md` are addressed. The smoke command is a command-chain check; it is not a substitute for the formal result.
 
 ## Current interpretation
 

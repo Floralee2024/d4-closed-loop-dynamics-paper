@@ -11,6 +11,9 @@ The files in this repository are copied from the local D4 experiment archive. Th
 | `results/d4a_repair_alignment.csv` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\protocol_d4_repair_null_20s200e\d4_repair_alignment.csv` | formal D4a alignment table |
 | `source/d4b_residual_desync_gpu.py` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\d4b_residual_desync_gpu.py` | D4b implementation |
 | `source/d4_complete_protocol.py` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\d4_complete_protocol.py` | unified protocol entry point |
+| `source/d2_d4_protocol.py` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\d2_d4_protocol.py` | D4a runner |
+| `source/experiment_D_pytorch_history_symbol_budget.py` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\experiment_D_pytorch_history_symbol_budget.py` | D4a model dependency |
+| `source/summarize_d4.py` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\summarize_d4.py` | integrated report generator |
 | `source/D4_PROTOCOL.md` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\D4_PROTOCOL.md` | original commands and protocol notes |
 
 ## Missing formal artifact
