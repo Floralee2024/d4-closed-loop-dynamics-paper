@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+outputs/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.log
+*.tmp
+*.png
+!figures/
+!figures/*.png
+!figures/*.svg
+*.pdf
