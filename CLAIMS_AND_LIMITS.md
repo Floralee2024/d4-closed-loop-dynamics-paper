@@ -37,6 +37,8 @@ The formal run should emit, at minimum, one row per `(seed, residual_strength, v
 
 For each seed and residual condition, train the model once under a pre-specified training coupling, freeze the resulting weights, and evaluate the same model over the C grid. If training genuinely depends on C by design, report this as a separate estimand and add a frozen or coupled alternative. Reuse the same worlds, batches, and evaluation draws across C values.
 
+The repository includes `repro/fixed_model_sweep.py` for an explicit diagnostic version of this gate. The first 16-cell probe completed, but every cell had `dyn_gain=0`: the current dynamics score is based on hard symbol IDs, which are C-invariant once weights are frozen. Therefore the naive fixed-model sweep is not a valid test of the current `C*_dyn` estimand. A valid follow-up must first define a C-dependent dynamics metric or explicitly treat `C*_dyn` as a training-path threshold. The probe and raw outputs are archived in `results/fixed_model_sweep_probe/`.
+
 ### Gate C: estimator sensitivity
 
 Recompute all phase markers under at least:

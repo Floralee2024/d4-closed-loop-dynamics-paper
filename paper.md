@@ -8,7 +8,7 @@ Many analyses of learned bottlenecks summarize learning with a single critical c
 
 In D4a, an eight-cell formal alignment table covers two splits, two channel variants, two bottleneck sizes, and 20 seeds per cell. The archived integrated report gives mean absolute separations of 0.312 between `C*_dyn` and `C*_util`, 3.212 between a null-dynamics marker and utility, and 12.769 between `C*_rank` and utility; the dynamics marker is closer to utility than the rank/equivalence marker in 93.8% of the reported comparisons. In D4b, the archived grouped summary covers 3,000 configurations, 10 seeds, five residual strengths, and three splits. Introducing a continuous residual bypass is accompanied by a rise in `sync_gap = |C*_dyn - C*_rank|` from 2.60–3.95 at zero residual to 7.50–13.60 in the reported nonzero-strength groups, while utility sensitivity falls from approximately 0.47 to 0.03–0.21. The rate at which dynamics appears before rank/equivalence also increases from 0.25 at zero residual to as high as 0.80–0.85.
 
-The result is not that one universal critical constant has been discovered. In the current implementation, each point on the `C` curve is produced by a fresh training run, and the threshold is extracted from a discrete grid after local smoothing. The defensible conclusion is narrower: within this synthetic protocol, rank/equivalence, dynamics, and utility are separable phase markers; the dynamics marker is the most utility-aligned of the tested structural markers; and residual bypass is associated with a reordering of those markers. A fixed-model/common-random-number sweep, formal raw D4b export, and mechanism controls are required before making a stronger causal claim.
+The result is not that one universal critical constant has been discovered. In the current implementation, each point on the `C` curve is produced by a fresh training run, and the threshold is extracted from a discrete grid after local smoothing. A 16-cell fixed-model diagnostic did not close this causal gate: all cells had zero dynamics-score gain because the current dynamics metric is based on hard symbol IDs that are C-invariant after weights are frozen. The defensible conclusion is narrower: within this synthetic protocol, rank/equivalence, dynamics, and utility are separable phase markers; the dynamics marker is the most utility-aligned of the tested structural markers; and residual bypass is associated with a reordering of those markers. A C-dependent fixed-model dynamics metric, formal raw D4b export, and mechanism controls are required before making a stronger causal claim.
 
 ## 1. Introduction
 
@@ -252,6 +252,8 @@ The current archive provides useful but incomplete robustness evidence.
 
 Train once per seed and residual condition, then evaluate the same weights across the `C` grid. If the model architecture requires `C` during training, use common random numbers and a pre-specified coupling so that adjacent `C` conditions differ only in the intended control. Compare the resulting thresholds with the current per-`C` retraining estimand.
 
+We implemented a small fixed-model diagnostic using this repository's model and metric definitions. It completed for 16 seed × residual × split cells, but all cells had zero dynamics-score gain. The reason is structural: the current dynamics score uses NMI of hard symbol IDs, and those IDs are produced by the frozen logits without a C-dependent operation. Thus a naive frozen-weight sweep cannot recover the current `C*_dyn`; it does not show that fixed-model dynamics is absent. A valid causal check must first define a dynamics metric on a C-dependent quantity such as the continuous bottleneck or transition readout, or else state that the current `C*_dyn` is a training-path threshold.
+
 #### Common random numbers
 
 Reuse world draws, minibatches, evaluation draws, and noise across neighboring `C` values. This reduces the risk that the apparent threshold is a change in sampled problem instances.
@@ -286,6 +288,7 @@ If the fixed-model sweep shows that the rank, dynamics, and utility markers alig
 6. The OOD splits test particular synthetic shifts and should not be interpreted as broad distributional generalization.
 7. The current mechanism story is not separated from optimization, parameter-count, or compute differences.
 8. The linked activation-invariance experiment is not part of the evidence base for this paper. It used a constructionally identical activation path and independent per-`C` random draws, so it should not be used to strengthen the D4 claim without a corrected protocol.
+9. The completed fixed-model probe showed that the current hard-ID dynamics metric is C-invariant after freezing weights; this is an estimand limitation, not a negative result about fixed-model dynamics.
 
 ## 8. Reproducibility and artifact map
 
@@ -299,6 +302,7 @@ The repository keeps the manuscript separate from copied source artifacts.
 | Formal D4a alignment table | `results/d4a_repair_alignment.csv` |
 | D4a/D4b report-level summary | `results/D4_integrated_report.md` |
 | D4b grouped summary | `results/D4b_residual_desync_results.md` |
+| Fixed-model diagnostic and raw probe | `results/fixed_model_sweep_probe.md` and `results/fixed_model_sweep_probe/` |
 | Claim ceiling and release gates | `CLAIMS_AND_LIMITS.md` |
 | Low-cost artifact check | `repro/validate_artifacts.ps1` |
 

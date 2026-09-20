@@ -53,6 +53,16 @@ The original full D4b command is recorded in `source/D4_PROTOCOL.md`. It is expe
 
 The local artifact check also runs `repro/audit_claim_numbers.py`, which recomputes the headline D4a means and checks the D4b report-level table shape and separation ranges.
 
+For the causal-interpretation gate, run the small fixed-model check with:
+
+```powershell
+& .\\.venv-d4\\Scripts\\python.exe .\\repro\\fixed_model_sweep.py --device cpu
+```
+
+This trains once at `train_C` and evaluates the same weights over the C grid. Its output is exploratory until scaled to the formal design.
+
+The first completed probe is archived in `results/fixed_model_sweep_probe/`. It found zero dynamics gain in all 16 cells because the current dynamics score uses hard symbol IDs that are invariant to C after freezing weights. This exposes an estimand-design issue: a formal fixed-model causal check requires a C-dependent dynamics metric first.
+
 ## Current interpretation
 
 The strongest defensible statement from the archived evidence is:

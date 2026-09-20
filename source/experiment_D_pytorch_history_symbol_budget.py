@@ -268,9 +268,15 @@ def ridge_mse(x_train, y_train, x_test, y_test, lam=1e-3):
     ones_test = torch.ones(x_test.shape[0], 1, device=x_test.device)
     xt = torch.cat([ones_train, x_train], dim=1)
     xv = torch.cat([ones_test, x_test], dim=1)
-    eye = torch.eye(xt.shape[1], device=x_train.device)
-    eye[0, 0] = 0.0
-    w = torch.linalg.solve(xt.T @ xt + lam * eye, xt.T @ y_train)
+    # Solve the intercept-unregularized ridge problem through an augmented
+    # least-squares system.  Forming X.T @ X and calling solve can fail on
+    # CPU when symbolic features are rank-deficient, even though the intended
+    # ridge objective is well-defined for the non-intercept coefficients.
+    penalty = torch.zeros(xt.shape[1], xt.shape[1], device=x_train.device)
+    penalty[1:, 1:] = torch.eye(xt.shape[1] - 1, device=x_train.device) * math.sqrt(lam)
+    augmented_x = torch.cat([xt, penalty], dim=0)
+    augmented_y = torch.cat([y_train, torch.zeros(penalty.shape[0], device=y_train.device)], dim=0)
+    w = torch.linalg.lstsq(augmented_x, augmented_y).solution
     pred = xv @ w
     return F.mse_loss(pred, y_test).item()
 

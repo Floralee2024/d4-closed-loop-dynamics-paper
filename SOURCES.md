@@ -15,6 +15,16 @@ The files in this repository are copied from the local D4 experiment archive. Th
 | `source/experiment_D_pytorch_history_symbol_budget.py` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\experiment_D_pytorch_history_symbol_budget.py` | D4a model dependency |
 | `source/summarize_d4.py` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\summarize_d4.py` | integrated report generator |
 | `source/D4_PROTOCOL.md` | `D:\Codex\2026-06-28\c-0-20-c-seeds-20\outputs\D4_PROTOCOL.md` | original commands and protocol notes |
+| `repro/fixed_model_sweep.py` | repository-local diagnostic | fixed-model/common-random-number probe |
+
+## Repository-local reproducibility patch
+
+The public copy of `experiment_D_pytorch_history_symbol_budget.py` changes
+`ridge_mse` from a direct solve of `X.T @ X` to an equivalent augmented
+least-squares solve. The original CPU smoke failed on a singular Gram matrix;
+the augmented formulation preserves the unregularized intercept and ridge
+penalty while remaining stable for rank-deficient symbolic features. Archived
+formal D4a numbers were not silently recomputed after this patch.
 
 ## Missing formal artifact
 
