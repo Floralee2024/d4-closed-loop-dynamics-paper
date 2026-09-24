@@ -1,6 +1,6 @@
 # When One Critical Coupling Is Not Enough: Residual Bypass Desynchronizes Representation, Dynamics, and Utility
 
-**Evidence-bounded manuscript draft — 20 September 2026**
+**Complete evidence-bounded manuscript draft; formal experiment and data release complete — 20 September 2026**
 
 ## Abstract
 

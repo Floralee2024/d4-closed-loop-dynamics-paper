@@ -27,7 +27,9 @@ This file prevents the repository from silently upgrading a benchmark result int
 - The results do not establish that residual bypass universally improves or harms utility.
 - The results do not establish transfer to natural data, other architectures, or deployment settings.
 
-## Required gates before calling the repository submission-ready
+## Required gates for stronger causal claims
+
+The formal experiment, manuscript, and reproducibility release are complete. The gates below are not missing-data gates; they are optional strengthening checks required only if the paper is to make a stronger fixed-model intervention or mechanism claim.
 
 ### Gate A: export the formal D4b raw table — closed for the current estimand
 

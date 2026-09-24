@@ -12,14 +12,16 @@ The paper studies a synthetic symbolic bottleneck with three operational phase m
 
 The central result is hierarchical rather than scalar: the three markers are separable, `C*_dyn` is more closely aligned with `C*_util` than the rank/equivalence marker in the current design, and a continuous residual bypass changes their ordering instead of producing a simple “better/worse” effect on utility.
 
-## Status
+## Study completion and evidence boundary
 
-`paper.md` is a complete evidence-bounded manuscript draft. The raw-export gate is closed for the formal per-C retraining estimand; the fixed-model and mechanism gates remain open:
+`paper.md` is a complete evidence-bounded manuscript draft. The formal D4a/D4b experiment and data release are complete; the repository is not waiting for missing runs or missing raw data.
+
+The raw-export gate is closed for the formal per-C retraining estimand. The fixed-model and mechanism gates remain open only for a stronger causal interpretation:
 
 1. the formal D4b release now contains the per-configuration CSV, four shard configs, a merge manifest, provenance, and recomputed summaries;
 2. the current D4b implementation retrains a fresh model for every `C`, so the reported curves are operational thresholds under per-`C` retraining, not a fixed-trained-model intervention sweep.
 
-The remaining caveat limits causal interpretation rather than data auditability. The manuscript therefore does not describe `C*` as a continuous critical constant or claim that residual bypass alone caused the observed phase ordering.
+These open gates are claim-strengthening follow-ups, not unfinished work. The remaining caveat limits causal interpretation rather than data auditability. The manuscript therefore does not describe `C*` as a continuous critical constant or claim that residual bypass alone caused the observed phase ordering.
 
 ## Repository layout
 
