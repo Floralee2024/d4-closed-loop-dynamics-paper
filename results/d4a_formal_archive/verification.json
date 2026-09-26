@@ -1,0 +1,11 @@
+{
+  "raw_rows": 1600,
+  "landmark_rows": 160,
+  "q90_checks": 960,
+  "structure_splits": [
+    "train_mixed"
+  ],
+  "min_usage_entropy": 0.7553390264511108,
+  "utility_q90_at_zero": 140,
+  "dyn_q90_at_zero": 104
+}

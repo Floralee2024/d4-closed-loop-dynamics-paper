@@ -1,77 +1,47 @@
 # When One Critical Coupling Is Not Enough
 
-This repository contains the manuscript and reproducibility materials for the D4 experiment:
+The manuscript is **When One Critical Coupling Is Not Enough: Residual Bypass Is Associated with Operational Marker Separation**.
 
-> **When One Critical Coupling Is Not Enough: Residual Bypass Desynchronizes Representation, Dynamics, and Utility**
+This repository contains two related but different synthetic studies:
 
-The paper studies a synthetic symbolic bottleneck with three operational phase markers:
+- **D4a:** a recurrent model trained once per seed/variant; C changes sequence generation. A usage/rank proxy and an entropy/future-MI proxy are compared with normalized MSE utility using unsmoothed q90 landmarks.
+- **D4b:** a discrete-bottleneck model retrained at every C, residual strength and K. A mixed-representation rank proxy and an outcome/lower-state NMI association proxy are compared using smoothed, first-point-referenced q90 landmarks.
 
-- `C*_rank`: rank/equivalence structure,
-- `C*_dyn`: dynamics-level structure,
-- `C*_util`: downstream utility.
+D4b does not demonstrate the mechanism behind D4a. Their control parameters, proxies and utility definitions differ. The observations are protocol-specific associations, not fixed-model intervention effects or demonstrated symbolic equivalence.
 
-The central result is hierarchical rather than scalar: the three markers are separable, `C*_dyn` is more closely aligned with `C*_util` than the rank/equivalence marker in the current design, and a continuous residual bypass changes their ordering instead of producing a simple “better/worse” effect on utility.
+## Current findings and qualifications
 
-## Study completion and evidence boundary
+D4a's selected temporal proxy is closer to utility than its usage/rank proxy under q90. It is not the best of every diagnostic or an estimator-independent utility predictor.
 
-`paper.md` is a complete evidence-bounded manuscript draft. The formal D4a/D4b experiment and data release are complete; the repository is not waiting for missing runs or missing raw data.
+D4b nonzero residual conditions have larger K-balanced marker gaps and smaller utility ranges on the original full grid. The latter contrast includes q(0,0)=0. A post-hoc analysis excluding C=0 reverses the range comparison in OOD-inverted at r=0.1. High-residual rank markers frequently hit C=24; many utility thresholds are invalid. K-balanced means and event-rate denominators are defined explicitly in the manuscript.
 
-The raw-export gate is closed for the formal per-C retraining estimand. The fixed-model and mechanism gates remain open only for a stronger causal interpretation:
+## Artifacts and reproduction
 
-1. the formal D4b release now contains the per-configuration CSV, four shard configs, a merge manifest, provenance, and recomputed summaries;
-2. the current D4b implementation retrains a fresh model for every `C`, so the reported curves are operational thresholds under per-`C` retraining, not a fixed-trained-model intervention sweep.
+- `paper.md`: revised manuscript, including separate methods and post-hoc sensitivity results.
+- `CLAIMS_AND_LIMITS.md`: current claim boundaries.
+- `source/`: original implementations and archived protocol.
+- `results/d4a_repair_alignment.csv`: eight-cell D4a aggregate table. Matching raw curves and landmarks have now been recovered in `results/d4a_formal_archive/`, with source hashes.
+- `results/d4b_formal_gpu/`: 3,000 raw evaluation rows, thresholds, configs and provenance (1,000 trained conditions evaluated on three splits).
+- `results/revision_posthoc/`: exploratory endpoint sensitivity, denominator diagnostics, cluster-bootstrap contrasts and input hashes.
+- `figures/`: original summary figures and additional utility/proxy curves.
 
-These open gates are claim-strengthening follow-ups, not unfinished work. The remaining caveat limits causal interpretation rather than data auditability. The manuscript therefore does not describe `C*` as a continuous critical constant or claim that residual bypass alone caused the observed phase ordering.
+Run without training:
 
-## Repository layout
-
-```text
-paper.md                         manuscript draft
-CLAIMS_AND_LIMITS.md             claim ceiling and release gates
-SOURCES.md                       provenance of local artifacts
-results/d4a_repair_alignment.csv formal D4a alignment table
-results/D4_integrated_report.md  source D4 summary
-results/D4b_residual_desync_results.md
-results/d4b_formal_gpu/        formal raw D4b table, summaries, and provenance
-source/                          copied experiment entry points
-  d4_complete_protocol.py        unified entry point
-  d2_d4_protocol.py              D4a implementation
-  experiment_D_pytorch_history_symbol_budget.py
-                                  D4a model dependency
-  d4b_residual_desync_gpu.py     D4b implementation
-  summarize_d4.py                report generator
-repro/                           low-cost validation and rerun notes
+```powershell
+python .\repro\audit_claim_numbers.py
+python .\repro\verify_d4a_archive.py
+python .\repro\revision_posthoc.py
 ```
 
-## Reproduction entry points
+The revision script uses Python's standard library and preserves archived results. Its bootstrap intervals are post-hoc descriptive summaries, not confirmatory tests. All revision tables are computed from existing CSVs; no new GPU run is needed.
 
-The source protocol contains the original smoke and full-run commands. From the repository root, the intended commands are:
+Original training entry points remain available:
 
 ```powershell
 python .\source\d4_complete_protocol.py --stage smoke --device auto
 python .\source\d4_complete_protocol.py --stage all --device cuda --tf32 --persistent-workers
 ```
 
-The original full D4b command is recorded in `source/D4_PROTOCOL.md`; the verified GPU release is archived under `results/d4b_formal_gpu/`. The smoke command is a command-chain check; it is not a substitute for the formal result.
+Historical reports and `source/D4_PROTOCOL.md` preserve earlier terminology and commands. The current manuscript supersedes their causal or universal interpretations. The two archived fixed-model probes use different readouts and remain exploratory.
 
-The local artifact check also runs `repro/audit_claim_numbers.py`, which recomputes the headline D4a means and checks the formal D4b release shape and separation ranges.
-
-For the formal CUDA sweep, `repro/run_formal_d4b_gpu.sh` launches the ten-seed run without credentials. When a run is split across GPUs or background jobs, `repro/merge_d4b_chunks.py` validates complete, non-overlapping raw curves and recomputes every official summary.
-
-For the causal-interpretation gate, run the small fixed-model check with:
-
-```powershell
-& .\\.venv-d4\\Scripts\\python.exe .\\repro\\fixed_model_sweep.py --device cpu
-```
-
-This trains once at `train_C` and evaluates the same weights over the C grid. Its output is exploratory until scaled to the formal design.
-
-The first hard-ID probe is archived in `results/fixed_model_sweep_probe/`; it found zero dynamics gain in all 16 cells because hard symbol IDs are invariant to C after freezing weights. A second probe in `results/fixed_model_sweep_transition_probe/` uses a C-dependent transition-head gain and produces valid `C*_dyn` values, but remains exploratory until scaled and paired with residual null controls.
-
-## Current interpretation
-
-The strongest defensible statement from the released evidence is:
-
-> In this synthetic symbolic-bottleneck protocol, representation geometry, dynamics structure, and downstream utility do not share one operational threshold. Under the reported per-`C` retraining protocol, the dynamics marker is closer to utility than the rank/equivalence marker, while residual bypass is associated with larger phase-marker separation and lower measured utility sensitivity.
-
-The result is a mechanism hypothesis and a reproducible benchmark observation, not yet a universal law about neural networks.
+D4a archive recovery reproduced 960 q90 markers. Of 160 utility markers, 140 occur at C=0; alignment is not evidence of coincident capability onset. The minimum recorded normalized symbol-usage entropy is 0.755, so complete symbol collapse is not supported by these curves. Figure 2 shows the recovered raw metric trajectories.

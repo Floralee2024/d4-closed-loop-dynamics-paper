@@ -1,3 +1,4 @@
+> **Historical protocol record.** This file preserves the original unified D4 naming and hypotheses for reproducibility. The current manuscript treats D4a and D4b as related but non-identical studies and does not adopt mechanism or causal claims from this protocol text. See paper.md and CLAIMS_AND_LIMITS.md for the current evidence boundary.
 # Experiment D4 Protocol
 
 ## Complete Entry Point

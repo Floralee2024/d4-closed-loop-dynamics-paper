@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 """Build an integrated D4 report from D4a and D4b CSV outputs.
 
+This is a legacy report generator for the pre-revision archive. Its output
+preserves historical terminology and is not the source of the current manuscript.
+
 D4a is the C* decomposition / null-baseline experiment produced by
 `d2_d4_protocol.py --mode d4_repair`.
 

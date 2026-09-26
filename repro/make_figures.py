@@ -45,7 +45,7 @@ def figure_d4a():
     left, top, plot_w, plot_h = 85, 65, 970, 350
     y_max = 15.0
     parts = svg_start(width, height, "D4a phase alignment", "Formal D4a q90 threshold error across eight cells.")
-    parts.append(text(width / 2, 28, "D4a: utility alignment differs by phase marker", 18, "middle", weight="500"))
+    parts.append(text(width / 2, 28, "D4a: q90 alignment of operational proxies", 18, "middle", weight="500"))
     for tick in (0, 5, 10, 15):
         y = top + plot_h - (tick / y_max) * plot_h
         parts.append(line(left, y, left + plot_w, y, "#dddddd", 1, "3 3"))
@@ -55,7 +55,7 @@ def figure_d4a():
     parts.append(text(20, top + plot_h / 2, "Mean q90 threshold error", 12, "middle", "#222", rotate=-90))
     colors = ["#2a6fbb", "#8c8c8c", "#d9772b"]
     keys = ["dyn_to_util_q90_err_mean", "dyn_null_to_util_q90_err_mean", "rank_to_util_q90_err_mean"]
-    labels = ["C*_dyn vs utility", "null dynamics vs utility", "C*_rank vs utility"]
+    labels = ["temporal proxy vs utility", "shuffled proxy vs utility", "usage/rank proxy vs utility"]
     group_w = plot_w / len(rows)
     bar_w = group_w * 0.22
     for i, row in enumerate(rows):
@@ -83,8 +83,8 @@ def figure_d4b():
     top, plot_h = 75, 280
     lefts = [65 + i * (panel_w + panel_gap) for i in range(3)]
     splits = ["id", "ood_random", "ood_inverted"]
-    parts = svg_start(width, height, "D4b residual desynchronization", "Formal D4b grouped summary recomputed from 3000 raw configurations.")
-    parts.append(text(width / 2, 30, "D4b: residual bypass is associated with phase-marker desynchronization", 17, "middle", weight="500"))
+    parts = svg_start(width, height, "D4b operational marker separation", "Formal D4b grouped summary recomputed from 3000 raw configurations.")
+    parts.append(text(width / 2, 30, "D4b: residual-associated operational marker separation", 17, "middle", weight="500"))
     colors = {"sync_gap": "#2a6fbb", "utility_sensitivity": "#d9772b", "negative_delta_rate": "#2e8b57"}
     for panel, split in enumerate(splits):
         sub = sorted((r for r in rows if r["split"] == split), key=lambda r: float(r["residual_strength"]))
@@ -123,7 +123,7 @@ def figure_d4b():
                     parts.append(f'<rect x="{x - 3.5:.1f}" y="{y - 3.5:.1f}" width="7" height="7" fill="{color}"/>')
                 else:
                     parts.append(f'<path d="M {x:.1f} {y - 4:.1f} L {x - 4:.1f} {y + 3:.1f} L {x + 4:.1f} {y + 3:.1f} Z" fill="{color}"/>')
-    legend = [("#2a6fbb", "sync gap"), ("#d9772b", "utility sensitivity"), ("#2e8b57", "dynamics-first rate")]
+    legend = [("#2a6fbb", "sync gap"), ("#d9772b", "utility range (full grid)"), ("#2e8b57", "D-proxy-first rate (all rows)")]
     x = 245
     for color, label in legend:
         parts.append(f'<rect x="{x}" y="395" width="13" height="13" fill="{color}"/>')

@@ -1,0 +1,12 @@
+{
+  "evidence_id": "d4-revision-posthoc-20260926",
+  "status": "exploratory",
+  "evidence_level": "descriptive_association",
+  "inputs": {
+    "results\\d4b_formal_gpu\\curves.csv": "387f8df01471280a2de315f87d5626707b4b371cc558c89224218b2b50f96bf9",
+    "results\\d4b_formal_gpu\\cstar_summary.csv": "4c72d61677deb283d8cbd41d9a3a39f874c97966b91ec4b2c2d7a5d57d8c4207"
+  },
+  "script_sha256": "761706e96f1b12f47df5e12771b22d8d361d7d83a144d03e92bbf900e0740870",
+  "bootstrap_resamples": 2000,
+  "bootstrap_seed": 20260926
+}

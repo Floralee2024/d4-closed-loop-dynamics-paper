@@ -1,164 +1,137 @@
-# When One Critical Coupling Is Not Enough: Residual Bypass Desynchronizes Representation, Dynamics, and Utility
-
-**Complete evidence-bounded manuscript draft; formal experiment and data release complete — 20 September 2026**
+# When One Critical Coupling Is Not Enough: Residual Bypass Is Associated with Operational Marker Separation
 
 ## Abstract
 
-Many analyses of learned bottlenecks summarize learning with a single critical control value, denoted here by `C*`. That summary is only adequate if representation geometry, internal dynamics, and downstream utility change at the same point. We test this assumption in a synthetic symbolic-bottleneck protocol with three operational phase markers: rank/equivalence (`C*_rank`), dynamics (`C*_dyn`), and downstream utility (`C*_util`).
+A single threshold can summarize several measured properties only when their operational landmarks align. We examine this question in two related but distinct synthetic studies. D4a trains a recurrent model once per seed and representation variant, varies a control parameter in the data-generating process, and compares thresholds of representation, temporal-association and utility proxies. Across eight cells with 20 seeds each, the selected temporal proxy has mean absolute q90 threshold distance 0.3125 from utility, compared with 12.76875 for the usage/rank proxy and 3.2125 for a shuffled temporal null. The temporal proxy is closer than the usage/rank proxy in 93.75% of reported comparisons. This result is estimator-specific: a null-adjusted diagnostic has lower mean q90 error, and the slope-based comparison does not preserve the same advantage.
 
-In D4a, an eight-cell formal alignment table covers two splits, two channel variants, two bottleneck sizes, and 20 seeds per cell. The archived integrated report gives mean absolute separations of 0.312 between `C*_dyn` and `C*_util`, 3.212 between a null-dynamics marker and utility, and 12.769 between `C*_rank` and utility; the dynamics marker is closer to utility than the rank/equivalence marker in 93.8% of the reported comparisons. In D4b, we now release 3,000 raw configuration rows covering 10 seeds, five residual strengths, two bottleneck sizes, and three splits. Relative to zero residual (`sync_gap` 1.70–2.50; utility sensitivity 0.466–0.477), nonzero residual conditions show larger separation (`sync_gap` 5.62–15.37) and lower utility sensitivity (0.021–0.186). Dynamics-first ordering reaches rates as high as 0.85, but the pattern is not monotone in every split. The utility threshold itself is often invalid under the preset gain gate once residual strength is nonzero, so utility sensitivity and threshold validity are reported separately.
+D4b instead retrains a discrete-bottleneck model at every control value and residual strength. Its geometry proxy measures the mixed representation, while its label-association proxy measures symbol IDs; neither proxy is identical to its D4a counterpart. In the full-grid summaries, nonzero residual conditions have larger K-balanced marker gaps (5.60–15.37 versus 1.70–2.50) and smaller utility ranges. The utility comparison includes a structural endpoint difference: at zero control and zero residual the representation is identically zero. In a post-hoc analysis excluding that endpoint, the range reduction persists for ID but reverses for OOD-inverted at residual strength 0.1 (0.182 versus 0.088). High-residual rank thresholds also frequently reach the grid boundary.
 
-The result is not that one universal critical constant has been discovered. In the current implementation, each point on the `C` curve is produced by a fresh training run, and the threshold is extracted from a discrete grid after local smoothing. The formal D4b raw export closes the data-audit gate, but not the causal gate: a 16-cell fixed-model diagnostic did not recover the current hard-ID dynamics score because it is C-invariant after weights are frozen. The defensible conclusion is narrower: within this synthetic protocol, rank/equivalence, dynamics, and utility are separable phase markers; the dynamics marker is the most utility-aligned of the tested structural markers in D4a; and residual bypass is associated with a reordering of those markers under per-C retraining. A fixed-model/common-random-number analysis and mechanism controls are still required before making a stronger causal claim.
+The evidence supports protocol-specific marker alignment and separation, not a common dynamics quantity across studies, a fixed-model residual intervention effect, or a demonstrated bypass mechanism. Recovered D4a raw artifacts reproduce all 960 checked q90 landmarks, but 140 of 160 utility landmarks are already at C=0. The alignment therefore does not establish coincident capability onset. Both studies now provide raw metric curves for reanalysis.
 
 ## 1. Introduction
 
-The phrase “the critical coupling” compresses several distinct questions. At what control value does a learned representation become symbolically equivalent? At what value does it support the relevant state transition or dynamical law? At what value does the downstream task become useful? These questions can have different answers even when they use the same scalar control parameter. This framing is related to work showing that learning dynamics can exhibit plateaus and rapid transitions [1], and to analyses that treat representation changes as structured rather than as a single scalar event [3, 4].
+When several readouts are intended to reflect a common change in a learned representation, one might summarize them with a shared control threshold. That is a hypothesis to check, not an implication of using the same control variable. Different readouts can vary smoothly, have different saturation scales, or respond to different parts of a system. Learning dynamics and representation analyses motivate examining these distinctions [1, 3, 4], but do not establish that the particular metrics used here should coincide.
 
-This distinction matters whenever a bottleneck is intended to mediate both representation and action. A downstream readout can become effective through a continuous shortcut before the bottleneck has acquired the intended symbolic structure. Residual parameterizations are a natural architectural context for such a path because they explicitly add an input-referenced residual function [2]. Conversely, a representation can look geometrically organized while its transition dynamics remain unusable. Treating all of these events as one `C*` can therefore conceal the order in which a system acquires different capabilities.
+We use “marker” for an operational landmark on a measured curve. A q90 marker does not by itself demonstrate a phase transition, a discontinuity, or emergence of a capability. Our question is whether selected markers align under their specified protocols, and how their separation varies across residual conditions. The residual-path hypothesis is motivated by the possibility that a continuous route carries useful information alongside a discrete bottleneck; residual architectures provide context [2], not evidence for this local mechanism.
 
-We study this problem in a controlled synthetic setting. The experiment has two parts. D4a decomposes the operational threshold into rank/equivalence, dynamics, and utility markers and compares their alignment. D4b changes the strength of a continuous residual path while keeping the nominal symbolic pathway and evaluation protocol fixed at the design level, then asks whether the phase markers separate.
+D4a and D4b address related questions in different systems. D4a compares proxy alignment with utility as the synthetic data-generating process changes. D4b describes residual-associated separation under per-control retraining. D4b is not a controlled mediation experiment explaining the D4a result. Their control parameters, representations, tasks, utility scales and structural scores differ.
 
-The paper makes three contributions.
+The contributions are an explicit comparison of operational landmarks, an estimator-qualified D4a alignment observation, and a reproducible D4b association accompanied by endpoint, missing-threshold and aggregation diagnostics.
 
-1. It replaces a scalar-threshold question with an explicit phase-marker decomposition.
-2. It reports an empirical alignment result: the dynamics marker is closer to utility than the rank/equivalence marker in the archived D4a result.
-3. It turns the residual bypass into a desynchronization hypothesis and reports the associated ordering statistics across ID and OOD splits from a machine-readable formal raw table.
+## 2. Questions and scope
 
-The paper also makes the limits of these contributions explicit. The formal D4b per-configuration CSV is now released with shard manifests and an independent merge check. More importantly, the implementation trains a new model separately for every `C`, so the current curves estimate an operational threshold under per-`C` retraining. They do not yet identify the effect of changing `C` in a fixed trained system, and nonzero residual conditions frequently fail the utility gain gate. These limitations shape the claim ceiling throughout the manuscript.
+D4a asks whether a usage/rank proxy or a temporal-association proxy has a q90 landmark closer to task utility. D4b asks how the gap between a mixed-representation rank proxy and a symbol-label association proxy varies with residual strength, and how absolute utility and its grid range vary alongside it.
 
-## 2. Research question and experiment card
-
-### 2.1 Research question
-
-Does one operational `C*` summarize representation geometry, dynamics structure, and downstream utility in a symbolic bottleneck? If not, does a continuous residual bypass change the ordering of these phase markers?
-
-### 2.2 Actively changed variables
-
-- The control grid `C`, used to obtain operational phase markers.
-- Residual bypass strength `r ∈ {0, 0.1, 0.25, 0.5, 1.0}` in D4b.
-- Split (`id`, `ood_random`, `ood_inverted` in D4b; `id`, `ood_inverted` in D4a).
-- Bottleneck size `K ∈ {8, 16}`.
-- Channel variant (`original`, `pre_softmax`) in D4a; the formal D4b summary is reported for the original variant.
-
-### 2.3 Target quantities
-
-For each condition, the protocol extracts three grid-derived thresholds:
-
-- `C*_rank`: first grid point at which the rank/equivalence structure reaches the threshold criterion;
-- `C*_dyn`: first grid point at which the dynamics structure reaches the threshold criterion;
-- `C*_util`: first grid point at which utility reaches the threshold criterion.
-
-The principal contrasts are:
+Within each study, write
 
 \[
-E_{dyn} = |C^*_{dyn} - C^*_{util}|,
+E_D=|C_D^*-C_U^*|,\qquad E_R=|C_R^*-C_U^*|,\qquad
+\Delta=C_D^*-C_R^*,\qquad G=|\Delta|.
 \]
 
-\[
-E_{rank} = |C^*_{rank} - C^*_{util}|,
-\]
+Negative delta denotes an earlier D-proxy landmark, not proof of earlier acquisition of dynamics. Historical CSV names `C_rank`, `C_dyn`, `C_util`, `sync_gap` and `utility_sensitivity` are retained for reproducibility. In the prose, “rank” and “dynamics” refer only to the explicitly defined proxies below; no symbolic-equivalence relation is established.
 
-\[
-\Delta_{dyn,rank} = C^*_{dyn} - C^*_{rank},
-\qquad
-G_{sync} = |\Delta_{dyn,rank}|.
-\]
-
-Negative `Δ_dyn,rank` means that dynamics reaches its operational threshold before rank/equivalence. `sync_gap` is the absolute separation and is not itself a causal effect size.
-
-### 2.4 What the design can and cannot establish
-
-The design can establish whether the recorded operational markers differ under the specified training and threshold-extraction protocol. It can compare their alignment across the reported cells and describe how the grouped summaries change with residual strength.
-
-It cannot, in its current form, establish that residual bypass causes the separation, because the current code creates a new model for each `C` and changes the seed offset as a function of `C` and residual condition. It also cannot establish a universal critical constant or generalize beyond the synthetic world without additional data and architectures.
-
-### 2.5 Pre-specified falsifiers for the main interpretation
-
-The phase-marker interpretation would be weakened if any of the following occurred in a preregistered re-analysis:
-
-- fixed-model/common-random-number sweeps made the three markers effectively coincide;
-- the dynamics-versus-utility alignment disappeared under neighboring grids and threshold fractions;
-- residual-strength effects disappeared under a magnitude-matched shuffled-residual control;
-- the effect appeared only in one split, one `K`, or one channel variant;
-- the result was driven by invalid or missing thresholds rather than valid curves.
+The reported contrasts can establish descriptive differences under these protocols. They cannot establish general critical constants, equivalent measurements across D4a/D4b, causal mediation, or a fixed-trained-model residual intervention. Per-C retraining is a legitimate training-protocol estimand, but differs from changing the forward path of one fixed model. Condition-dependent random seeds and absent mechanism controls further limit the interpretation.
 
 ## 3. Methods
 
-### 3.1 Synthetic symbolic bottleneck
+### 3.1 Two distinct synthetic studies
 
-The protocol trains a symbolic bottleneck model that maps observations into a discrete-symbol pathway and, in the residual condition, an additional continuous pathway. The nominal residual construction is:
+| Feature | D4a | D4b |
+| --- | --- | --- |
+| Meaning of C | Parameter in synthetic sequence generation | Internal mixture gate, g(C)=C/(C+2) |
+| Model | GRU representation, followed by clustering/readouts | MLP encoder, discrete codebook and continuous path |
+| Training | One model per seed/variant; training C sampled over [0,12) | Fresh initialization and training per seed, residual strength, K and C |
+| Symbol construction | K-means on learned representations | Hard IDs from categorical logits at evaluation |
+| Variants | original and pre_softmax | original in the formal run |
+| Splits | ID, OOD-inverted | ID, OOD-random, OOD-inverted |
+| Seeds and K | 20 seeds; K=8,16 | 10 base seeds; K=8,16 |
+| Evaluation grid | 0, 0.5, 1, 2, 3, 5, 8, 12, 16, 24 | Same numerical grid, different control meaning |
+
+In D4a, C changes terms in the synthetic latent sequence and target-generating process. A GRU is trained by mean squared error for 200 epochs with C sampled during training; evaluation then varies C and fits symbolic/readout representations. `original` uses normalized GRU states; `pre_softmax` uses softmax(ReLU(states)). The latter is not the D4b tanh-before-logits variant. Evaluation above C=12 extends beyond the training control range. In the recovered formal raw table, structural metrics use `train_mixed` for both evaluation-split labels; ID/OOD refer to the utility evaluation. Structural measurements reused across splits are not independent replications.
+
+D4b uses a stochastic 64-state world with upper and lower components. Observations contain state embeddings, noise, time features and a spurious label channel whose relationship to the target differs by split. The four-class decision label is derived from current and future states; the outcome label is the future upper state. These labels do not drive the world transition: this is supervised sequence data, not action-conditioned closed-loop policy evaluation. OOD splits are shifts within this one world, not independent world replications.
+
+The D4b representation is
 
 \[
-q = g(C)\,q_{sym} + r\,[1-g(C)]\,q_{cont},
+q(C,r)=g(C)q_{sym}+r[1-g(C)]q_{cont},\qquad r\in\{0,0.1,0.25,0.5,1\}.
 \]
 
-where `r` is residual strength. At `r = 0`, the continuous residual is removed. At `r = 1`, the full hybrid path is enabled. The `original` variant uses a linear action-logit path; the D4a `pre_softmax` variant applies a nonlinearity before the categorical logits.
+Separate heads learn decision, outcome and symbol-transition targets, with entropy regularization; C also scales symbol-usage and transition-loss coefficients during training. Thus the training contrast is not solely a forward mixture change. The formal run uses 300 training steps and batch size 512; archived configs give the remaining settings. The same base-seed datasets are reused across conditions, while initialization/training randomness is offset by C, K and residual strength. The three evaluation splits share each trained model. In particular q(0,0)=0, whereas q(0,r)=r q_cont for nonzero r.
 
-The synthetic world provides state and action-related observations together with in-distribution and out-of-distribution evaluation splits. The OOD splits are not treated as independent replications of the world; they are stress tests of the same synthetic construction.
+### 3.2 Operational proxies and utility
 
-### 3.2 Threshold estimator
+D4a uses standardized recurrent states and K-means assignments S. Its representation proxy is
 
-The protocol evaluates a discrete grid of `C` values. For each metric, it optionally smooths the interior grid points with the three-point kernel `[0.25, 0.50, 0.25]`. It then defines the operational threshold as the first grid value reaching 90% of the observed gain from the first grid point to the maximum observed value, subject to the relevant minimum-gain validity gate.
+\[
+R_A=0.70\,H(S)/\log K+0.30\,\mathrm{erank}(z)/d.
+\]
 
-This estimator has three consequences.
+This combines symbol usage and effective rank; neither term directly tests symbolic equivalence. Its temporal proxy is
 
-1. `C*` is a grid point, not a continuous estimate.
-2. The estimated threshold depends on the observed grid maximum.
-3. Smoothing and the 90% fraction are part of the estimand, not merely visualization choices.
+\[
+D_A=0.70[1-H(S_{t+1}\mid S_t)/\log K]+0.30\,\mathrm{NMI}(S_t,\mathrm{bin}(y_{t+1})).
+\]
 
-Accordingly, values such as `C* = 3.0` should be reported with the raw curve, the grid, the smoother, the gain gate, and sensitivity analyses. They should not be described as continuous critical constants.
+Future targets are quantile-binned. A null shuffles successor assignments and future-target bins; `dyn_delta` subtracts the resulting null score. The transition component measures conditional-entropy predictability, not held-out transition-model accuracy. A sequence collapsed to one symbol has zero conditional entropy and a maximal transition component despite lacking useful discrimination. Constancy of S_t alone is insufficient for that conclusion. We therefore do not interpret a high D_A as sufficient evidence of useful learned dynamics. The recovered raw table has minimum normalized usage entropy 0.755 across its 1,600 rows, excluding complete single-symbol collapse in those recorded evaluations. This does not establish that the predictability component measures useful dynamics, or rule out less extreme occupancy effects.
 
-### 3.3 D4a: decomposition and null comparison
+D4a utility is clipped normalized MSE improvement:
 
-D4a uses:
+\[
+U_A=\mathrm{clip}\left(\frac{MSE_{constant}-MSE_{symbol}}{\max(MSE_{constant}-MSE_{best},10^{-6})},-0.5,1.2\right).
+\]
 
-- splits: `id`, `ood_inverted`;
-- variants: `original`, `pre_softmax`;
-- bottleneck sizes: `K = 8, 16`;
-- 20 seeds per cell;
-- `C` grid: `0, 0.5, 1, 2, 3, 5, 8, 12, 16, 24`;
-- formal alignment table: 8 rows, one per split × variant × `K` cell.
+The constant predicts the training-target mean. The best reference is the minimum evaluation MSE among the implemented full-state, symbolic and PCA readout candidates across budgets. Thus utility is relative to that condition-specific reference, not an absolute accuracy or an independent deployment selection result.
 
-The comparison includes the dynamics marker, a null-dynamics marker, and the rank/equivalence marker. The integrated report summarizes the distances from each marker to utility. The machine-readable D4a alignment table additionally records q90-distance means and cell-level rates such as the fraction for which dynamics is closer to utility than rank.
+For D4b, define N(x) as min-max normalization separately within each seed x residual x K x split curve over C. The formal proxies are
 
-### 3.4 D4b: residual desynchronization
+\[
+R_B=N(\mathrm{erank}(q)/d),\qquad
+D_B=0.60N(\mathrm{NMI}(S,outcome))+0.40N(\mathrm{NMI}(S,lower)).
+\]
 
-D4b uses:
+Here lower is a current-state component and outcome is a future-state label. The default D_B contains no transition term. R_B measures the mixed representation, including the residual, while D_B measures discrete symbol IDs. Their separation can reflect different measurement objects as well as different responses to C. Min-max normalization removes absolute component scale, so a validity gate on a normalized curve does not ensure a large raw effect.
 
-- 10 seeds;
-- residual strengths `0, 0.1, 0.25, 0.5, 1.0`;
-- splits `id`, `ood_random`, `ood_inverted`;
-- `K = 8, 16`;
-- 10 `C` values;
-- 3,000 reported configurations, before grouping by strength, `K`, and split.
+D4b utility is normalized decision accuracy, U_B=(accuracy-majority_accuracy)/(1-majority_accuracy), with majority accuracy computed from the evaluation labels. Its historical `utility_sensitivity` field is exactly max_C U_B - min_C U_B. We call it **utility range**; it is not a derivative or local sensitivity.
 
-The formal raw table records the raw metrics for every configuration; `cstar_summary.csv` derives seed-level thresholds, and the grouped summaries report `sync_gap`, sync rate, utility sensitivity, and the negative-delta rate. The principal pattern is interpreted as an ordering change: as residual bypass is introduced, dynamics can become operationally available earlier than rank/equivalence, while the downstream utility becomes less sensitive to further movement along the `C` grid.
+### 3.3 Separate threshold estimators
 
-### 3.5 Important implementation qualification
+D4a uses the unsmoothed curve and selects the first grid point satisfying
 
-The current D4b implementation loops over `C`, sets a seed using a function of the base seed, `K`, `C`, variant, and residual strength, constructs a new `SymbolicBottleneckModel`, and trains it for that condition. Therefore, a D4b curve is not a post-training sweep over one fixed set of weights. It is a collection of independently trained condition-specific models.
+\[
+y(C)\geq\min_C y+0.90(\max_C y-\min_C y).
+\]
 
-We retain this design in the current report because it is the protocol that generated the archived results. We call the resulting quantity an **operational threshold under per-`C` retraining**. The paper does not use it as evidence for a fixed-model intervention effect. A coupled or frozen sweep is a required follow-up gate.
+Its gain gate is max minus min: 0.02 for structural scores and 0.10 for utility. There is no three-point smoothing in this estimator.
 
-### 3.6 Statistical unit and aggregation
+D4b first smooths interior values with [0.25,0.50,0.25], leaving endpoints unchanged. It selects the first point satisfying
 
-Seeds and configurations are the sampling units in the released summaries. The raw table and `cstar_summary.csv` provide seed-level rows, but the grouped means should not be read as if every grid point were an independent replicate. In particular, all threshold contrasts within one seed share a training condition and are statistically dependent. Confidence intervals or hierarchical uncertainty summaries remain future work.
+\[
+\widetilde y(C)\geq\widetilde y(C_{min})+0.90[\max_C\widetilde y-\widetilde y(C_{min})].
+\]
+
+The smoothed gain must reach 0.05 for R_B/D_B and 0.10 for utility. Auxiliary archived `rank_valid`, `dyn_valid` and `utility_sensitive` flags use unsmoothed gains; threshold availability in this paper is determined from finite C* values, not those flags.
+
+These algorithms differ on nonmonotone curves. Both are grid-relative landmarks, not fitted changepoints. For a finite curve passing a positive-gain gate, its maximum necessarily reaches the fractional target; invalidity comes from missing data or insufficient gain, not from failing to reach 90% of that same observed maximum. A value of 24 is a boundary hit. It indicates sensitivity to the grid extent; it does not identify a censored latent critical constant without additional assumptions. D4b smoothing is over neighboring indices despite unequal C spacing.
+
+### 3.4 Aggregation, denominators and uncertainty
+
+D4a reports eight split x variant x K cells, each summarizing 20 seeds. Headline values average these cell summaries. The recovered archive now permits per-seed threshold re-extraction; all 960 q90 checks across six markers and 160 landmark rows match the archived values. The source alignment table is byte-identical to the previously released one.
+
+D4b has 1,000 trained conditions and 3,000 evaluation rows, yielding 300 seed x residual x K x split threshold rows. Neither evaluation rows nor grid points are independent training replications. Different K conditions are separately trained but share base-seed datasets; all three splits share trained models.
+
+For each residual strength and split, archived gap means first average finite thresholds within K, then give K=8 and K=16 equal weight. They are not pooled means of all valid rows when valid counts differ. N in the main table is the sum of valid gap rows. Individual rank and D-proxy means in the K-specific table use their own finite rows, which need not be paired.
+
+Archived sync and ordering rates use all ten planned rows within each K. An undefined gap is counted as no observed event, then the two K rates are averaged. Because each K has ten planned rows, these rates equal event counts divided by 20. Sync means |delta|<=1; negative and positive mean delta<0 and delta>0. Missing thresholds are not evidence of the opposite ordering. The supplement separately reports event counts, all-row rates, pooled-valid rates and valid counts by K; these alternate denominators do not replace the archived estimand.
+
+Post-hoc uncertainty summaries resample the ten base seeds jointly across K and residual conditions, using 2,000 percentile-bootstrap resamples. They preserve this dependence structure but condition on one world, the grid and finite-threshold selection. They do not correct boundary effects, missingness or multiple comparisons, and are descriptive rather than confirmatory tests.
 
 ## 4. Results
 
-### 4.1 D4a: dynamics is the most utility-aligned tested structural marker
+### 4.1 D4a: the selected temporal proxy is closer to utility than the usage/rank proxy under q90
 
-The archived integrated D4 report gives the following aggregate separations:
-
-| Comparison | Mean absolute separation from `C*_util` |
-| --- | ---: |
-| `C*_dyn` vs. `C*_util` | 0.312 |
-| null-dynamics marker vs. `C*_util` | 3.212 |
-| `C*_rank` vs. `C*_util` | 12.769 |
-
-The reported dynamics-closer-than-rank rate is 0.938. This is the strongest D4a result, but its exact interpretation is comparative: among the tested structural markers and under the operational estimator, dynamics is more utility-aligned than rank/equivalence. It does not mean that `C*_dyn` is a universal predictor of utility.
-
-The formal D4a q90 alignment table is reproduced below from `results/d4a_repair_alignment.csv`.
+The eight-cell table gives mean absolute threshold distances 0.3125 for D_A, 3.2125 for its null and 12.76875 for R_A. The D_A-closer-than-R_A rate is 0.9375. Here “q90 error” means absolute distance between two q90 landmarks, not the 90th percentile of an error distribution.
 
 | Split | Variant | K | `dyn-util` q90 error | `null-util` q90 error | `rank-util` q90 error | dyn closer rate | dyn beats null rate |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -171,17 +144,21 @@ The formal D4a q90 alignment table is reproduced below from `results/d4a_repair_
 | ood_inverted | pre_softmax | 8 | 0.525 | 6.525 | 12.600 | 0.950 | 0.650 |
 | ood_inverted | pre_softmax | 16 | 0.325 | 3.250 | 13.775 | 0.800 | 0.650 |
 
-![D4a phase alignment](figures/d4a_phase_alignment.svg)
+![D4a q90 alignment](figures/d4a_phase_alignment.svg)
 
-**Figure 1.** D4a q90 threshold error across the eight formal cells. Lower bars indicate closer alignment to utility. The figure is generated directly from `results/d4a_repair_alignment.csv`.
+**Figure 1.** Absolute q90 landmark distances from utility, reproduced from the eight-cell alignment table. Lower values mean closer alignment under the D4a estimator.
 
-The D4a table supports three observations. First, all eight cells report valid detection rates for the symbolic, dynamics, null-dynamics, and rank criteria. Second, the dynamics-to-utility q90 error remains small relative to the rank-to-utility error in every cell. Third, the null dynamics comparison is worse than the learned dynamics comparison, but it is not uniformly worse under every rate-based summary. That last point is why the paper reports both distances and rates rather than compressing the null into a single binary verdict.
+The null has larger average error, but is not uniformly worse in rate-based comparisons. The derived null-adjusted `dyn_delta` has lower mean q90 error (about 0.219) than the selected D_A proxy. The slope-based dynamics-closer rate is about 0.456. Thus the supported comparison is D_A versus R_A under q90, not “best structural marker” or an estimator-independent predictor of utility. The recovered curves materially clarify this result: 140/160 utility q90 markers and 104/160 temporal-proxy q90 markers equal C=0. Since the estimator uses the curve minimum rather than the first point, a curve already high at C=0 can pass immediately even if it subsequently declines. A small marker distance can therefore reflect shared boundary locations rather than coincident onset of useful structure. The headline comparison remains arithmetically correct, but supports only landmark alignment under this definition.
 
-### 4.2 D4b: residual bypass is associated with desynchronization
+![D4a raw metric curves](figures/d4a_raw_curves.svg)
 
-The formal D4b run produced 3,000 raw rows and the following strength-level summary. Each row averages the seed-level `cstar_summary.csv` values for one residual strength and split; `N` is the number of valid `sync_gap` seed-level rows.
+**Figure 2.** Recovered D4a unsmoothed curves: individual seeds (thin) and cell means (thick). The usage/rank and temporal proxies are measured on train_mixed; utility is evaluated on the indicated split. Their vertical scales have different definitions and are not interchangeable performance units. The curves should not be interpreted as a common monotone emergence trajectory.
 
-| Residual strength | Split | N valid | `sync_gap` | Sync rate | Utility sensitivity | Negative-delta rate |
+### 4.2 D4b: residual-associated marker separation on the original grid
+
+The table retains the archived K-balanced means and all-row event rates defined in Section 3.4. Historical dynamics-first terminology means D_B-proxy-first only.
+
+| Residual strength | Split | N valid / 20 | `sync_gap` | Sync rate | Utility range | Negative-delta rate (all rows) |
 | ---: | --- | ---: | ---: | ---: | ---: | ---: |
 | 0.0 | id | 20 | 1.700 | 0.70 | 0.470 | 0.35 |
 | 0.0 | ood_random | 20 | 2.350 | 0.50 | 0.477 | 0.30 |
@@ -199,17 +176,17 @@ The formal D4b run produced 3,000 raw rows and the following strength-level summ
 | 1.0 | ood_random | 19 | 15.372 | 0.05 | 0.036 | 0.80 |
 | 1.0 | ood_inverted | 20 | 13.750 | 0.05 | 0.151 | 0.80 |
 
-![D4b residual desynchronization](figures/d4b_residual_desynchronization.svg)
+![D4b grouped summaries](figures/d4b_residual_desynchronization.svg)
 
-**Figure 2.** Formal D4b grouped summary by residual strength and split. The blue series uses the left axis; orange and green use the right axis. The plotted means are recomputed from the released raw table in `results/d4b_formal_gpu/`.
+**Figure 3.** Archived K-balanced gap, utility range and all-row negative-delta rate. Gap uses the left axis; range and rate use the right axis. Missing threshold rows are excluded from gap means but retained in event-rate denominators.
 
-Relative to the zero-residual groups, every nonzero residual group has lower measured utility sensitivity, and the valid `sync_gap` range shifts upward from 1.70–2.50 to 5.62–15.37. The negative-delta rate becomes dominant at moderate and high residual strength, indicating that `C*_dyn < C*_rank` is more common than the reverse ordering. The pattern is not strictly monotone in every split or metric: the OOD-inverted `sync_gap` at strength 0.25 is lower than at 0.1, and the ID value at strength 1.0 is higher than at 0.5. The appropriate summary is therefore “residual bypass is associated with a phase-ordering change” rather than “the effect increases monotonically with residual strength.”
+On the complete grid, the nonzero-residual gap means range from 5.60 to 15.37, versus 1.70 to 2.50 at zero residual. Ordering is not uniformly monotone: OOD-inverted gap declines from r=0.1 to 0.25, and the ID negative-delta rate declines from 0.85 at r=0.5 to 0.70 at r=1. At r=0.5 in ID, 17 of 20 planned rows have negative delta, while 19 have finite gaps: the archived rate is 0.85, and the separately labeled pooled-valid rate is 17/19=0.895.
 
-The utility threshold validity gate is an important qualification. At residual strength 0, `C*_util` is valid in all 20 seed-level rows for each split. At nonzero strengths, it is valid in 0/20 ID rows and 0/20 OOD-random rows; in OOD-inverted it is valid in 13/20, 6/20, 6/20, and 1/20 rows at strengths 0.1, 0.25, 0.5, and 1.0 respectively. Thus the residual result is strongest as evidence about phase-marker separation and utility sensitivity, not as a complete three-threshold comparison at every condition.
+Rank thresholds hit 24 in 3.3%, 25.0%, 21.7%, 60.0% and 76.7% of all seed x K x split rows as r increases. Large high-residual gaps must be interpreted with these boundary hits and the unequal spacing of the grid. They do not quantify the separation of continuous, uncensored critical points.
 
-### 4.3 Ordering by bottleneck size and split
+At r=0, utility thresholds are finite in all 20 rows per split. At nonzero r they are finite in 0/20 ID and 0/20 OOD-random rows. OOD-inverted counts are 13/20, 6/20, 6/20 and 1/20. Accordingly, the residual comparison primarily concerns two proxies and utility range; it is not a complete three-threshold ordering at every condition.
 
-The formal seed-level table gives the following mean ordering values for rank versus dynamics:
+### 4.3 K-specific marker locations
 
 | Residual strength | K | ID | OOD random | OOD inverted |
 | ---: | ---: | --- | --- | --- |
@@ -224,114 +201,90 @@ The formal seed-level table gives the following mean ordering values for rank ve
 | 1.0 | 8 | 21.20 vs 16.80 | 20.40 vs 12.30 | 19.60 vs 13.20 |
 | 1.0 | 16 | 24.00 vs 7.70 | 22.80 vs 3.22 | 23.20 vs 7.70 |
 
-Each entry is `C*_rank vs C*_dyn`; lower dynamics values therefore represent earlier operational dynamics structure. The formal table shows that the direction of ordering is not a property of the split alone: it changes with residual condition and `K`. This is consistent with a phase-ordering account, but it also motivates the fixed-model and equalized-control reanalysis.
+Entries are mean C_R* versus mean C_D*, calculated separately over each marker's finite rows. They are descriptive locations, not paired differences. The K-balanced gap in Section 4.2 is computed from within-row absolute differences before averaging and cannot be recovered by subtracting these means.
 
-## 5. Interpretation
+### 4.4 Post-hoc endpoint sensitivity and absolute curves
 
-### 5.1 Why a single C* is insufficient here
+At C=0, the zero-residual model receives q=0 while nonzero-residual models retain a continuous path. The full-grid utility-range contrast therefore includes a structural difference at its endpoint. We retain that original contrast and separately recompute each seed x K range on C>0, then apply the same K-balanced averaging. This is a post-hoc sensitivity analysis; it does not alter the archived markers or retrospectively become a prespecified test.
 
-The D4a result is best read as a failure of scalar sufficiency. The rank/equivalence marker is far from utility, while the dynamics marker is close. A single number can still be useful for a specific purpose, but it must be labeled with the phase it measures. “The critical coupling” is underspecified unless the target property is named.
+| r | Split | Full-grid utility range | C>0 utility range |
+| ---: | --- | ---: | ---: |
+| 0 | id | 0.470 | 0.065 |
+| 0 | ood_random | 0.477 | 0.064 |
+| 0 | ood_inverted | 0.466 | 0.088 |
+| 0.1 | id | 0.030 | 0.030 |
+| 0.1 | ood_random | 0.058 | 0.057 |
+| 0.1 | ood_inverted | 0.186 | 0.182 |
+| 0.25 | id | 0.025 | 0.025 |
+| 0.25 | ood_random | 0.042 | 0.040 |
+| 0.25 | ood_inverted | 0.140 | 0.126 |
+| 0.5 | id | 0.026 | 0.024 |
+| 0.5 | ood_random | 0.039 | 0.038 |
+| 0.5 | ood_inverted | 0.154 | 0.150 |
+| 1 | id | 0.021 | 0.020 |
+| 1 | ood_random | 0.036 | 0.035 |
+| 1 | ood_inverted | 0.151 | 0.148 |
 
-### 5.2 What residual bypass may be doing
+In ID, r=0 has mean U(0)=0 and U(24)=0.445, whereas r=0.1 has approximately 0.526 and 0.509. Excluding C=0 reduces the zero-residual range to 0.065. The range remains lower at r=0.1 in ID (0.030), but is higher in OOD-inverted (0.182 versus 0.088). Thus “all nonzero groups have lower utility range” describes the original full grid, not a robust statement across endpoint choices. This finding is compatible with useful bypass information but cannot independently establish a desynchronization mechanism.
 
-The proposed mechanism is that a continuous path carries task-relevant information without requiring the symbolic bottleneck to satisfy the same rank/equivalence constraints. Dynamics-relevant or utility-relevant behavior can therefore become operational at a lower symbolic coupling than full equivalence. The observed increase in `sync_gap`, drop in utility sensitivity, and rise in dynamics-first ordering are compatible with this account.
+![D4b absolute utility curves](figures/d4b_utility_curves.svg)
 
-This is a mechanism hypothesis, not a demonstrated mediation result. The current per-`C` retraining protocol means that training randomness and optimization trajectories are part of the observed curve. A residual-strength control can change the learned solution, not just the forward path of one fixed solution. For that reason, the paper uses “associated with” and “consistent with” rather than “causes.”
+**Figure 4.** Unsmoothed absolute utility by C, split and K. Thin lines are individual seeds; thick lines are seed means. Lines connect discrete evaluations and do not imply continuous fitted transitions. Utility is not normalized separately along these curves.
 
-### 5.3 Why utility sensitivity is not the same as utility
+![D4b operational proxy curves](figures/d4b_markers_curves.svg)
 
-The D4b table reports utility sensitivity to movement along the `C` grid. A lower sensitivity can mean that utility is robust to the bottleneck control because the task is solved through a bypass; it can also mean that the model has saturated, that the threshold estimator has compressed the curve, or that training variability obscures a real effect. In the formal run, nonzero residual conditions frequently fail the utility gain gate, so sensitivity must be interpreted together with absolute utility, action accuracy, threshold validity, and the released raw curves.
+**Figure 5.** Unsmoothed means of per-curve normalized R_B (solid) and D_B (dashed), with identical color coding to Figure 3. Averaged curves are descriptive; thresholds are extracted per seed after the specified smoothing, not from these mean curves. The plot does not establish sharp phase transitions.
 
-## 6. Robustness and falsification plan
+The supplement provides all 15 range comparisons, absolute endpoint values, denominator diagnostics and post-hoc seed-bootstrap intervals for residual-versus-zero gap and positive-C range contrasts. No D4a raw curves have been synthesized from aggregate means.
 
-The formal archive now provides a complete raw D4b export, but robustness evidence remains incomplete for causal interpretation.
+## 5. Interpretation and limitations
 
-### 6.1 Already present
+The evidence demonstrates disagreement among specified operational landmarks. It does not show that representation equivalence, useful dynamics and utility emerge at distinct physical phase transitions. Different measurement objects, relative normalization, grid spacing, validity gates and training protocols all contribute to what the landmarks mean.
 
-- D4a compares two splits, two channel variants, and two bottleneck sizes.
-- D4a includes a null-dynamics comparison.
-- D4b reports ID and two OOD splits separately rather than averaging them away.
-- The residual-strength zero condition provides a baseline for the bypass comparison.
+D4a's q90 alignment advantage is a comparison among proxies in a recurrent synthetic prediction task. Its entropy-based component can reward degenerate predictability; a future-label MI term also makes the proxy task-related rather than purely unsupervised. Aggregate alignment alone cannot identify what causes the advantage. The lower error of the null-adjusted diagnostic and the different slope-based result are material qualifications.
 
-### 6.2 Required before a strong publication claim
+D4b is a separate observation: a mixed-q rank marker and a symbol-label association marker separate more in nonzero-residual conditions on the selected grid. The two readouts measure different objects, and the high-residual rank marker frequently reaches the grid boundary. A bypass mechanism is one possible interpretation, not an identified cause. Low full-grid utility range is partly explained by an already useful nonzero-residual endpoint, and the endpoint-exclusion result shows that its direction depends on split.
 
-#### Fixed-model or coupled-C analysis
+Retraining is not inherently a flaw: it measures the outcome of the chosen training protocol. It cannot answer a fixed-model forward-path intervention question. D4b also uses condition-dependent initialization seeds, and nominal residual strength does not by itself measure the magnitude or semantic content of the learned residual path. Fixed-model probes and magnitude-matched residual controls would answer different, stronger questions.
 
-Train once per seed and residual condition, then evaluate the same weights across the `C` grid. If the model architecture requires `C` during training, use common random numbers and a pre-specified coupling so that adjacent `C` conditions differ only in the intended control. Compare the resulting thresholds with the current per-`C` retraining estimand.
+Both studies are synthetic and the D4b OOD splits come from one constructed world. Ten base seeds give limited uncertainty information. Missing thresholds may be informative, and neither finite-only means nor bootstrapping resolves that selection. D4a raw metric curves and landmarks were recovered during this revision; they do not include every underlying sample-level representation or symbol assignment. The raw-data and reproducibility limits are separate from the scientific interpretation limits.
 
-We implemented a small fixed-model diagnostic using this repository's model and metric definitions. It completed for 16 seed × residual × split cells, but all cells had zero dynamics-score gain. The reason is structural: the current dynamics score uses NMI of hard symbol IDs, and those IDs are produced by the frozen logits without a C-dependent operation. Thus a naive frozen-weight sweep cannot recover the current `C*_dyn`; it does not show that fixed-model dynamics is absent. A valid causal check must first define a dynamics metric on a C-dependent quantity such as the continuous bottleneck or transition readout, or else state that the current `C*_dyn` is a training-path threshold.
+## 6. Existing diagnostics and targeted follow-up
 
-We then repeated the same 16-cell probe with a transition-head gain that consumes `q(C)`. All cells produced a valid `C*_dyn`; mean `sync_gap` by residual strength was 0.5/0.5 at strength 0, 3.5/1.5 at 0.1, 1.5/2.5 at 0.5, and 0.0/4.0 at 1.0 for ID/OOD-inverted respectively. This establishes that a C-dependent frozen-model dynamics estimand can be computed, but not that residual bypass has a formal intervention effect: the pattern is non-monotone, several ID cells have invalid `C*_util`, and the probe has only two seeds, one K, one training C, and no residual null.
+The archived 16-cell frozen-model D4b probe found zero gain in the original D_B score: hard symbol IDs are C-invariant after weights are frozen. This is an estimand limitation, not evidence that fixed-model dynamics is absent. A second two-seed, one-K probe uses a transition head consuming q(C) and yields finite landmarks, but its nonmonotone pattern and absent residual null do not establish a formal intervention effect. It measures a different proxy and is not a replication of D_A or D_B.
 
-#### Common random numbers
+The original D4a artifacts have been recovered without retraining. The lowest-cost next steps are clearly labeled sensitivity analyses of the existing curves, especially distinguishing first-grid attainment from an interior upward crossing in D4a. Neighboring threshold fractions, unsmoothed estimates and extended-grid data would test different sources of estimator dependence; changing grid extent would require additional data, whereas the first two checks do not.
 
-Reuse world draws, minibatches, evaluation draws, and noise across neighboring `C` values. This reduces the risk that the apparent threshold is a change in sampled problem instances.
+A prospective stronger study should specify its measurement object and outcome before collecting data, then use common random numbers and magnitude-matched residual shuffles where appropriate. A fixed-model study must first choose a genuinely C-dependent readout. If such a different estimand aligns its markers, that would limit generalization of the current interpretation; it would not retroactively invalidate the descriptive per-C retraining result. If shuffled residuals reproduce the separation, the semantic-bypass interpretation should be weakened.
 
-#### Threshold sensitivity
+These are proposed tests, not claimed preregistered falsifiers. No new training was performed for this revision.
 
-Report unsmoothed curves, the current smoother, alternative threshold fractions, and neighboring grids. The main direction should survive without relying on the single grid point labeled 3.0.
+## 7. Reproducibility
 
-#### Residual nulls
-
-Preserve residual norm and compute budget while shuffling residual directions, labels, or assignment to the symbolic path. If desynchronization remains under a semantic shuffle, the proposed bypass interpretation must be narrowed.
-
-#### Equalized controls
-
-Match parameter count, training steps, optimizer settings, and evaluation budget across residual strengths. If exact matching is impossible, report the imbalance and treat it as a design limitation.
-
-#### Raw-output audit (completed for the current D4b estimand)
-
-The formal release now publishes one row per seed × residual strength × `K` × `C` × split, four shard configs, a merge manifest, and provenance tied to the experiment source revision. The local merge check recomputes every grouped statistic and detects duplicate or missing conditions. This closes the raw-export gate, but it does not close the fixed-model or mechanism gates.
-
-### 6.3 A result that would change the paper
-
-If the fixed-model sweep shows that the rank, dynamics, and utility markers align, the paper should be rewritten as a warning about per-`C` retraining rather than a result about residual desynchronization. If the residual shuffle reproduces the effect, the paper should retain the phase-ordering observation but remove or weaken the semantic bypass mechanism.
-
-## 7. Limitations
-
-1. The world is synthetic. The result is a controlled diagnostic, not evidence about natural tasks.
-2. The formal D4b raw table is now released and audit-complete for the per-C retraining estimand; it does not provide a fixed-model intervention estimand.
-3. The per-`C` retraining design prevents a clean causal interpretation of the `C` sweep.
-4. The operational threshold depends on a discrete grid, local smoothing, a 90% gain fraction, and minimum-gain gates.
-5. The release provides seed-level rows but not confidence intervals or hierarchical uncertainty intervals for every grouped result.
-6. Nonzero residual conditions often fail the utility gain gate, so `C*_util` is sparse even though utility sensitivity remains measurable.
-7. The OOD splits test particular synthetic shifts and should not be interpreted as broad distributional generalization.
-8. The current mechanism story is not separated from optimization, parameter-count, or compute differences.
-9. The linked activation-invariance experiment is not part of the evidence base for this paper. It used a constructionally identical activation path and independent per-`C` random draws, so it should not be used to strengthen the D4 claim without a corrected protocol.
-10. The completed fixed-model probe showed that the current hard-ID dynamics metric is C-invariant after freezing weights; this is an estimand limitation, not a negative result about fixed-model dynamics.
-
-## 8. Reproducibility and artifact map
-
-The repository keeps the manuscript separate from copied source artifacts.
-
-| Purpose | File |
+| Purpose | Artifact |
 | --- | --- |
-| Complete protocol and original commands | `source/D4_PROTOCOL.md` |
+| D4a implementation and model | `source/d2_d4_protocol.py`, `source/experiment_D_pytorch_history_symbol_budget.py` |
 | D4b implementation | `source/d4b_residual_desync_gpu.py` |
-| Unified entry point | `source/d4_complete_protocol.py` |
-| Formal D4a alignment table | `results/d4a_repair_alignment.csv` |
-| D4a/D4b archived report-level summary | `results/D4_integrated_report.md` |
-| Formal D4b raw table and summaries | `results/d4b_formal_gpu/` |
-| Formal D4b provenance | `results/d4b_formal_gpu/PROVENANCE.md` |
-| D4b archived grouped summary | `results/D4b_residual_desync_results.md` |
-| Fixed-model diagnostic and raw probe | `results/fixed_model_sweep_probe.md` and `results/fixed_model_sweep_probe/` |
-| C-dependent fixed-model diagnostic | `results/fixed_model_sweep_transition_probe.md` and `results/fixed_model_sweep_transition_probe/` |
-| Claim ceiling and release gates | `CLAIMS_AND_LIMITS.md` |
-| Low-cost artifact check | `repro/validate_artifacts.ps1` |
+| Archived protocol and commands | `source/D4_PROTOCOL.md` |
+| D4a aggregate alignment | `results/d4a_repair_alignment.csv` |
+| Recovered D4a raw curves, landmarks and source hashes | `results/d4a_formal_archive/` |
+| D4a threshold verification and Figure 2 | `repro/verify_d4a_archive.py` |
+| D4b raw curves, thresholds, configs and provenance | `results/d4b_formal_gpu/` |
+| Archived integrated report | `results/D4_integrated_report.md` |
+| Frozen-model diagnostics | `results/fixed_model_sweep_probe/`, `results/fixed_model_sweep_transition_probe/` |
+| Revision analysis and source hashes | `results/revision_posthoc/` |
+| Revision reanalysis script | `repro/revision_posthoc.py` |
+| Claim boundaries | `CLAIMS_AND_LIMITS.md` |
 
-Run the local artifact check with:
+Run `python repro/audit_claim_numbers.py` to check the archived headline numbers and release shape. Run `python repro/revision_posthoc.py` to regenerate the post-hoc tables and Figures 4–5 using only Python's standard library. Source hashes and exploratory status are recorded in `results/revision_posthoc/provenance.json`. Neither command retrains models. The artifact checks verify only their encoded properties, not causal or construct validity.
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\repro\validate_artifacts.ps1
-```
+D4b provides raw curves for threshold recomputation. Following the recorded source archive path in `SOURCES.md` recovered 1,600 D4a raw rows and 160 landmark rows. The original eight-cell alignment file has the same SHA-256 hash as the repository copy. `python repro/verify_d4a_archive.py` independently recomputes six q90 markers per row and checks the cell-level distance summaries; it also regenerates Figure 2. The recovery preserves original bytes and does not rerun training. It verifies these recorded metrics, not the original sample-level metric generation. Archived reports retain historical terminology; this manuscript and `CLAIMS_AND_LIMITS.md` state the current interpretation.
 
-This check verifies that the formal D4a table, D4b raw release, manifests, and report artifacts are present. It also recomputes the D4a headline numbers and D4b release shape; it does not claim that the fixed-model or mechanism gates are closed.
+## 8. Conclusion
 
-## 9. Conclusion
+The two synthetic studies support protocol-specific comparisons of operational proxies. In D4a, the selected temporal-association landmark is closer to utility than the usage/rank landmark under q90, with most utility landmarks already at the first grid point. In D4b, nonzero residual conditions accompany larger K-balanced rank/label-association gaps on the original grid. Lower full-grid utility range is endpoint-sensitive and does not persist in direction across all splits after excluding C=0.
 
-The D4 experiment supports a narrower and more useful statement than “there is one critical coupling.” In the tested symbolic bottleneck, rank/equivalence, dynamics, and downstream utility have different operational phase markers. The dynamics marker is substantially closer to utility than the rank/equivalence marker in the formal D4a result. In the formal D4b per-C retraining estimand, continuous residual bypass is associated with larger phase-marker separation, lower utility sensitivity, and more frequent dynamics-first ordering. The raw release makes this association auditable, while the remaining fixed-model, estimator-sensitivity, and mechanism controls determine how far the interpretation can be strengthened.
-
-The correct next step is not to promote a particular grid point into a universal constant. The raw-export gate is now closed; the remaining work is a fixed-model/common-random-number sweep, estimator sensitivity, and magnitude-matched residual nulls. If those checks preserve the ordering, D4 becomes a stronger controlled study of phase desynchronization. If they do not, the paper still yields a valuable methodological result: scalar C* claims can be artifacts of the training and threshold protocol unless the measured phase is specified.
+These observations motivate measuring and reporting separate landmarks instead of assuming one common threshold. They do not establish equivalent dynamics measurements across studies, symbolic equivalence, a fixed-model intervention effect, or a residual-bypass mechanism.
 
 ## References
 
@@ -339,5 +292,3 @@ The correct next step is not to promote a particular grid point into a universal
 2. K. He, X. Zhang, S. Ren, and J. Sun, “Deep residual learning for image recognition,” arXiv:1512.03385, 2015; published in CVPR 2016. https://arxiv.org/abs/1512.03385
 3. N. Tishby and N. Zaslavsky, “Deep learning and the information bottleneck principle,” arXiv:1503.02406, 2015. https://arxiv.org/abs/1503.02406
 4. M. Raghu, J. Gilmer, J. Yosinski, and J. Sohl-Dickstein, “SVCCA: Singular vector canonical correlation analysis for deep learning dynamics and interpretability,” arXiv:1706.05806, 2017. https://arxiv.org/abs/1706.05806
-
-These citations provide context for learning dynamics, residual pathways, bottleneck/phase-transition language, and representation comparison. They are not evidence for the local D4 numbers; those numbers come only from the local artifacts listed in `SOURCES.md`.

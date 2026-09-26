@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-D4b: Residual Bypass Desynchronization.
+D4b historical label: Residual Bypass Desynchronization.
+
+This implementation is retained for provenance; the current manuscript uses
+evidence-bounded operational-marker terminology.
 
 This self-contained GPU-friendly script tests the upgraded D4b hypothesis:
   pure symbolic (residual_strength=0):     C*_rank ~= C*_dyn

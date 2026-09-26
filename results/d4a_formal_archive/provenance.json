@@ -1,0 +1,12 @@
+{
+  "evidence_id": "d4a-original-archive-recovered-20260926",
+  "status": "recovered_original_artifacts",
+  "source": "local D4 archive/outputs/protocol_d4_repair_null_20s200e",
+  "note": "Byte-identical alignment to the previously released table; no training rerun or retrospective preregistration.",
+  "files": {
+    "d4_repair_raw.csv": "2da250546f994530c59c9d51ff69836c1d00a8a73c970fa3335ce1115e5c0a90",
+    "d4_repair_landmarks.csv": "dfe4d20f6cdabfc7ad8d011b9dbadf4a901da785c2f62c31472044d9a96ffbef",
+    "d4_repair_curve_summary.csv": "d1ad9e807e22e9559945299c11327b20130afca0a2e10194b793f3d556a2016c",
+    "d4_repair_alignment.csv": "39d6410eb1d2201bea795e96ee94f95bc523b098fa60b1ac1a851ac398db0443"
+  }
+}

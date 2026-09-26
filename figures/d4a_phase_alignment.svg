@@ -2,7 +2,7 @@
 <title id="title">D4a phase alignment</title>
 <desc id="desc">Formal D4a q90 threshold error across eight cells.</desc>
 <rect width="100%" height="100%" fill="#ffffff"/>
-<text x="550.0" y="28" font-size="18px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="500">D4a: utility alignment differs by phase marker</text>
+<text x="550.0" y="28" font-size="18px" text-anchor="middle" fill="#222" font-family="Arial, sans-serif" font-weight="500">D4a: q90 alignment of operational proxies</text>
 <line x1="85" y1="415.0" x2="1055" y2="415.0" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
 <text x="75" y="419.0" font-size="11px" text-anchor="end" fill="#444" font-family="Arial, sans-serif" font-weight="400">0</text>
 <line x1="85" y1="298.33333333333337" x2="1055" y2="298.33333333333337" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 3"/>
@@ -47,10 +47,10 @@
 <rect x="1010.91" y="93.58" width="26.68" height="321.42" fill="#d9772b"/>
 <text x="994.375" y="433" font-size="9px" text-anchor="end" fill="#333" font-family="Arial, sans-serif" font-weight="400" transform="rotate(-35 994.375 433)">ood_inverted / pre_softmax / K=16</text>
 <rect x="165" y="455" width="14" height="14" fill="#2a6fbb"/>
-<text x="185" y="467" font-size="11px" text-anchor="start" fill="#222" font-family="Arial, sans-serif" font-weight="400">C*_dyn vs utility</text>
+<text x="185" y="467" font-size="11px" text-anchor="start" fill="#222" font-family="Arial, sans-serif" font-weight="400">temporal proxy vs utility</text>
 <rect x="400" y="455" width="14" height="14" fill="#8c8c8c"/>
-<text x="420" y="467" font-size="11px" text-anchor="start" fill="#222" font-family="Arial, sans-serif" font-weight="400">null dynamics vs utility</text>
+<text x="420" y="467" font-size="11px" text-anchor="start" fill="#222" font-family="Arial, sans-serif" font-weight="400">shuffled proxy vs utility</text>
 <rect x="635" y="455" width="14" height="14" fill="#d9772b"/>
-<text x="655" y="467" font-size="11px" text-anchor="start" fill="#222" font-family="Arial, sans-serif" font-weight="400">C*_rank vs utility</text>
+<text x="655" y="467" font-size="11px" text-anchor="start" fill="#222" font-family="Arial, sans-serif" font-weight="400">usage/rank proxy vs utility</text>
 <text x="85" y="505" font-size="10px" text-anchor="start" fill="#666" font-family="Arial, sans-serif" font-weight="400">Formal D4a alignment table; each cell aggregates 20 seeds.</text>
 </svg>

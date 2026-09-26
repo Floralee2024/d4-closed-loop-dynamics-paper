@@ -1,3 +1,4 @@
+> **Interpretation status.** This archived report preserves pre-revision mechanism language. The current manuscript treats D4b as a protocol-specific, residual-associated marker-separation study; do not use this file's stronger causal wording as the current interpretation.
 # D4b Residual Desynchronization Results
 
 > **Archive note.** This is the pre-release report-level summary copied from the source archive. The formal GPU run and machine-readable 3,000-row results supersede these grouped values for the manuscript: see `results/d4b_formal_gpu/`.

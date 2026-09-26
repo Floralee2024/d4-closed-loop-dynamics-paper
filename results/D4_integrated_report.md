@@ -1,3 +1,4 @@
+> **Historical artifact — superseded interpretation.** This report preserves an earlier D4 analysis, terminology, and mechanism-level interpretation. Its numerical tables remain archival context, but its causal or universal wording is not a current claim. Use paper.md, CLAIMS_AND_LIMITS.md, and the machine-readable raw results for the evidence-bounded account.
 # Experiment D4: C* Decomposition and Residual Desynchronization
 
 Final structure:

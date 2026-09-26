@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 """Unified D4 protocol runner.
 
+This entry point preserves the original protocol for reproducibility; it is
+not the source of the revised evidence-bounded manuscript.
+
 This file is the complete D4 entry point. It combines:
 
 - D4a: C* decomposition + null dynamic baseline
